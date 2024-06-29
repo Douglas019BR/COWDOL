@@ -1,5 +1,4 @@
 import yfinance as yf
-import pandas as pd
 
 
 def get_dividends(symbol, start_date):
