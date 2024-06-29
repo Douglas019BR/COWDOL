@@ -1,3 +1,4 @@
+
 # Stock Portfolio Monitoring Tool
 
 
@@ -43,3 +44,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ### Contact
 For any inquiries, please contact [douglassermarini@gmail.com].
+
