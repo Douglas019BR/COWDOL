@@ -24,7 +24,7 @@ MANIFEST
 /staticfiles/
 
 /.idea/
-*.csv
+# *.csv
 /node_modules
 .warmup
 .serverless
