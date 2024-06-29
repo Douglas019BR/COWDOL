@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Portfolio Monitoring</title>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #007acc;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        #output {
+            margin-top: 2rem;
+        }
+
+        #graph {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Stock Portfolio Monitoring with PyScript</h1>
+    </header>
+    <main>
+        <div id="activities_input" class="card"></div>
+        <div id="output" class="card"></div>
+        <div id="graph" class="card"></div>
+    </main>
+    <section class="pyscript">
+        <py-tutor modules="./main.py">
+            <py-config src="./pyscript.toml"></py-config>
+            <py-script src="./main.py"></py-script>
+    </section>
+</body>
+
+</html>

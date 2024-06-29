@@ -1,0 +1,4 @@
+packages = ["requests"]
+
+[[fetch]]
+files = ['./input.csv']
