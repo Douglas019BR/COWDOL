@@ -23,6 +23,7 @@ MANIFEST
 !.pre-commit-config.yaml
 /staticfiles/
 
+
 /.idea/
 # *.csv
 /node_modules

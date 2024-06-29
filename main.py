@@ -34,6 +34,7 @@ def get_current_price(symbol):
     else:
         return None
 
+
 def process_portfolio(filename):
     results = []
 
