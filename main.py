@@ -3,24 +3,27 @@ import csv
 
 ALPHA_VANTAGE_API_KEY = 'I5BDJ29HDPFX7N0W'
 
+
 def get_dividends(symbol, start_date):
     url = f'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
         if 'Our standard API rate limit is 25 requests per day.' in data:
+            print(data)
             raise Exception("API rate limit exceeded")
         monthly_adjusted_data = data.get('Monthly Adjusted Time Series', {})
-        dividends ={}
+        dividends = {}
         for date, values in monthly_adjusted_data.items():
             if date >= start_date:
-                dividend_amount = float(values.get('7. dividend amount', '0.0'))
+                dividend_amount = float(
+                    values.get('7. dividend amount', '0.0'))
                 dividends[date] = dividend_amount
-                
+
         return dividends
     else:
         return {}
-        
+
 
 def get_current_price(symbol):
     url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
@@ -28,6 +31,7 @@ def get_current_price(symbol):
     if response.status_code == 200:
         data = response.json()
         if 'Our standard API rate limit is 25 requests per day.' in data:
+            print(data)
             raise Exception("API rate limit exceeded")
         current_price = float(data['Global Quote']['05. price'])
         return current_price
@@ -47,10 +51,10 @@ def process_portfolio(filename):
             purchase_date = row["PURCHASE_DATE"]
             purchase_value = float(row["PURCHASE_VALUE"])
 
-            
             dividends = get_dividends(symbol, purchase_date)
             current_price = get_current_price(symbol)
-            total_dividends = sum(dividends.values()) * amount if dividends else 0
+            total_dividends = sum(dividends.values()) * \
+                amount if dividends else 0
 
             current_value = current_price * amount
             purchase_total = purchase_value * amount
@@ -76,6 +80,7 @@ def process_portfolio(filename):
             results.append(message)
 
     return results
+
 
 if __name__ == "__main__":
     import pyscript
