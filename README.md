@@ -7,7 +7,7 @@
 [![CSS](https://img.shields.io/badge/CSS-3-blue?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 ## How to use
-Acesse a [GitHub Pages](...) para utilizar o projeto.
+Acesse a [GitHub Pages](https://douglas019br.github.io/COWDOL/) para utilizar o projeto.
 
 ## Description
 A tool to monitor stock portfolios on B3 (Brazilian Stock Exchange). This tool allows users to track their investments, view real-time data, calculate dividends received, and analyze their portfolio performance over time.
