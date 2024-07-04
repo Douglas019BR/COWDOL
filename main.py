@@ -1,39 +1,34 @@
 import requests
 import csv
 
-ALPHA_VANTAGE_API_KEY = 'I5BDJ29HDPFX7N0W'
+# ALPHA_VANTAGE_API_KEY = 'I5BDJ29HDPFX7N0W'
+# ALPHA_VANTAGE_API_KEY = 'BN8PXO3QS0YZBPSD'
+FINNHUB_API_KEY = 'cq3f8s1r01qobiisl0u0cq3f8s1r01qobiisl0ug'
 
 
 def get_dividends(symbol, start_date):
-    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-    response = requests.get(url)
+    url = f'https://finnhub.io/api/v1/stock/dividend?symbol={symbol}&from={start_date}'
+    headers = {
+        'X-Finnhub-Token': FINNHUB_API_KEY
+    }
+    response = requests.get(url, headers=headers)
+    print(f"response : {response}")
     if response.status_code == 200:
         data = response.json()
-        if 'Our standard API rate limit is 25 requests per day.' in data:
-            print(data)
-            raise Exception("API rate limit exceeded")
-        monthly_adjusted_data = data.get('Monthly Adjusted Time Series', {})
-        dividends = {}
-        for date, values in monthly_adjusted_data.items():
-            if date >= start_date:
-                dividend_amount = float(
-                    values.get('7. dividend amount', '0.0'))
-                dividends[date] = dividend_amount
-
+        print("##############")
+        print(data)
+        dividends = {item['date']: item['amount'] for item in data}
         return dividends
     else:
         return {}
 
 
 def get_current_price(symbol):
-    url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
+    url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_API_KEY}'
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        if 'Our standard API rate limit is 25 requests per day.' in data:
-            print(data)
-            raise Exception("API rate limit exceeded")
-        current_price = float(data['Global Quote']['05. price'])
+        current_price = data['c']
         return current_price
     else:
         return None
@@ -41,26 +36,32 @@ def get_current_price(symbol):
 
 def process_portfolio(filename):
     results = []
-
+    print('Processing portfolio...')
     with open(filename, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile, delimiter=";")
-
+        print('Reading file...')
         for row in reader:
             symbol = row["SYMBOL"]
             amount = int(row["AMOUNT"])
             purchase_date = row["PURCHASE_DATE"]
             purchase_value = float(row["PURCHASE_VALUE"])
 
+            print(f"Processing {symbol}...")
             dividends = get_dividends(symbol, purchase_date)
+
+            print(f"dividends : {dividends}")
             current_price = get_current_price(symbol)
+
+            print(f"current_price : {current_price}")
             total_dividends = sum(dividends.values()) * \
                 amount if dividends else 0
 
+            print(f"total_dividends : {total_dividends}")
             current_value = current_price * amount
             purchase_total = purchase_value * amount
             value_difference = current_value - purchase_total
             balance = value_difference + total_dividends
-
+            print(f"balance : {balance}")
             if balance > 0:
                 status = "Profit"
             elif balance < 0:
