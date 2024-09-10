@@ -1,42 +1,31 @@
-import requests
+from datetime import datetime
+
+import pytz
+import yfinance as yf
 import csv
 
-ALPHA_VANTAGE_API_KEY = 'I5BDJ29HDPFX7N0W'
+
+def get_dividends(symbol: str, start_date: str) -> dict:
+    start_date = datetime.strptime(start_date, "%d/%m/%Y")
+    timezone = pytz.timezone("America/Sao_Paulo")
+    start_date = timezone.localize(start_date)
+    stock = yf.Ticker(symbol)
+    dividends = stock.dividends
+    dividends = dividends[dividends.index >= start_date]
+    dividends_dict = dividends.to_dict()
+
+    return dividends_dict
 
 
-def get_dividends(symbol, start_date):
-    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        if 'Our standard API rate limit is 25 requests per day.' in data:
-            print(data)
-            raise Exception("API rate limit exceeded")
-        monthly_adjusted_data = data.get('Monthly Adjusted Time Series', {})
-        dividends = {}
-        for date, values in monthly_adjusted_data.items():
-            if date >= start_date:
-                dividend_amount = float(
-                    values.get('7. dividend amount', '0.0'))
-                dividends[date] = dividend_amount
-
-        return dividends
-    else:
-        return {}
-
-
-def get_current_price(symbol):
-    url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        if 'Our standard API rate limit is 25 requests per day.' in data:
-            print(data)
-            raise Exception("API rate limit exceeded")
-        current_price = float(data['Global Quote']['05. price'])
-        return current_price
-    else:
-        return None
+def get_current_price(symbol: str) -> float:
+    try:
+        stock = yf.Ticker(symbol)
+        current_price = stock.history(period="1d")["Close"].iloc[0]
+    except IndexError:
+        symbol = f"{symbol.split('.')[0]}F.sa"
+        stock = yf.Ticker(symbol)
+        current_price = stock.history(period="1d")["Close"].iloc[0]
+    return current_price
 
 
 def process_portfolio(filename):
@@ -53,8 +42,7 @@ def process_portfolio(filename):
 
             dividends = get_dividends(symbol, purchase_date)
             current_price = get_current_price(symbol)
-            total_dividends = sum(dividends.values()) * \
-                amount if dividends else 0
+            total_dividends = sum(dividends.values()) * amount if dividends else 0
 
             current_value = current_price * amount
             purchase_total = purchase_value * amount
@@ -83,8 +71,6 @@ def process_portfolio(filename):
 
 
 if __name__ == "__main__":
-    import pyscript
-
     results = process_portfolio("input.csv")
     for result in results:
         print(result)
