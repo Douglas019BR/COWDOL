@@ -4,7 +4,7 @@
 
 
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue?style=flat-square)](https://stephensonsn.github.io/engenharia_software_tools)
+[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue?style=flat-square)](https://douglas019br.github.io/COWDOL/)
 [![Python](https://img.shields.io/badge/Python-3-blue?style=flat-square)](https://www.python.org/)
 [![HTML](https://img.shields.io/badge/HTML-5-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS](https://img.shields.io/badge/CSS-3-blue?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/CSS)
@@ -36,7 +36,7 @@ pip install -r requirements.txt
 
 ### Run the script:
 ```
-python process.py
+python main.py
 ```
 
 ### Contributing
@@ -45,3 +45,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ### Contact
 For any inquiries, please contact [douglassermarini@gmail.com].
 
+
+
+proximos passos :
+
+Corrigir o "front"
+adicionar a soma dos valores na analise
+adicionar o lucro ou prejuizo total na analise
+adicionar as 5 melhores e as 5 piores escolhas na analise
