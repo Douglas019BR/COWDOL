@@ -3,7 +3,7 @@ Este e um projeto open-source idealizado por mim, fique a vontade para construir
 
 proximos passos :
 
-Corrigir o "front"
+Corrigir o front
 adicionar a soma dos valores na analise
 adicionar o lucro ou prejuizo total na analise
 adicionar as 5 melhores e as 5 piores escolhas na analise
@@ -13,44 +13,36 @@ Em breve vou reescrever esse readme.md
 
 Para contribuir, crie um issue dizendo o que vai fazer, faca um fork do projeto, na sua branch referencie o numero do issue que voce abriu, apos pronta as alteracoes, abra um PR para a branch main que vou verificar.
 
-# Stock Portfolio Monitoring Tool
 
+# BACKEND
 
-
-
-[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue?style=flat-square)](https://douglas019br.github.io/COWDOL/)
-[![Python](https://img.shields.io/badge/Python-3-blue?style=flat-square)](https://www.python.org/)
-[![HTML](https://img.shields.io/badge/HTML-5-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS](https://img.shields.io/badge/CSS-3-blue?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-
-## How to use
-Acesse a [GitHub Pages](https://douglas019br.github.io/COWDOL/) para utilizar o projeto.
-
-## Description
-A tool to monitor stock portfolios on B3 (Brazilian Stock Exchange). This tool allows users to track their investments, view real-time data, calculate dividends received, and analyze their portfolio performance over time.
-
-## Features
-
-- Fetches current stock prices from Yahoo Finance
-- Calculates dividends received since the purchase date
-- Computes the difference between current stock value and purchase value
-- Provides a summary of profits and losses for each stock
-
-## Requirements
-
-- [Python](https://www.python.org/)
-- [yfinance](https://pypi.org/project/yfinance/)
-- [pandas](https://pypi.org/project/pandas/)
-
+```sh
+cd backend/
+```
 
 ### Install the required libraries:
-```
+```sh
 pip install -r requirements.txt
 ```
 
 ### Run the script:
+```sh
+fastapi run server.py --host 127.0.0.1
+
 ```
-python main.py
+
+# FRONTEND
+```sh
+cd frontend/
+```
+### Install the required libraries:
+```sh
+npm install
+```
+
+### Run the script:
+```sh
+npm run start
 ```
 
 ### Contributing
