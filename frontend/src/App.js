@@ -18,8 +18,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 function App() {
-  const [csvData, setCsvData] = useState(null);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   const handleFileChange = e => {
     const file = e.target.files[0];
@@ -31,30 +30,65 @@ function App() {
       dynamicTyping: true,
       complete: result => {
         console.log(result.data);
-        setCsvData(result.data);
+        handleSubmit(result.data);
       },
     });
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-
-    if (!csvData) {
+  const handleSubmit = async parsedCsvData => {
+    if (!parsedCsvData || parsedCsvData.length === 0) {
       alert('Por favor, envie um arquivo CSV!');
       return;
     }
-
+    console.log(parsedCsvData);
     try {
       const response = await fetch('http://localhost:8000/profit-calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data: csvData }),
+        body: JSON.stringify({ data: parsedCsvData }),
       });
 
-      const result = await response.json();
-      setData(result);
+      const results = await response.json();
+      console.log(results);
+
+      const formattedData = results.map((item, index) => {
+        const {
+          balance,
+          current_value,
+          purchase_total,
+          value_difference,
+          total_dividends,
+          symbol,
+          amount,
+        } = item;
+
+        let status;
+        if (balance > 0) {
+          status = 'Profit';
+        } else if (balance < 0) {
+          status = 'Loss';
+        } else {
+          status = 'No change';
+        }
+
+        return {
+          id: index,
+          message:
+            `${symbol}\n\n Quantity: ${amount}\n Total Purchase Price: $${purchase_total.toFixed(
+              2
+            )}\n\n` +
+            `Total Current Value: $${current_value.toFixed(2)}\n\n` +
+            `Dividends Received: $${total_dividends.toFixed(2)}\n\n` +
+            `Difference (Current Price - Purchase Price): $${value_difference.toFixed(
+              2
+            )}\n\n` +
+            `Balance (Difference + Dividends): $${balance.toFixed(2)}\n\n` +
+            `Status: ${status}\n`,
+        };
+      });
+      setData(formattedData);
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
     }
@@ -75,51 +109,27 @@ function App() {
           Stock Portfolio Analyzer
         </Typography>
 
-        <form onSubmit={handleSubmit} style={{ textAlign: 'center' }}>
-          <Button
-            component="label"
-            variant="contained"
-            startIcon={<CloudUploadIcon />}
-            sx={{ marginBottom: 3 }} // Espaçamento entre o botão e o título
-          >
-            Upload file
-            <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-          </Button>
-        </form>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+          sx={{ marginBottom: 3 }}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+        </Button>
 
-        {data && (
-          <div style={{ marginTop: '20px' }}>
-            <h2>Resultados:</h2>
-            <table border="1">
-              <thead>
-                <tr>
-                  <th>Symbol</th>
-                  <th>Amount</th>
-                  <th>Purchase Value</th>
-                  <th>Current Price</th>
-                  <th>Total Dividends</th>
-                  <th>Value Difference</th>
-                  <th>Balance</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.symbol}</td>
-                    <td>{item.amount}</td>
-                    <td>{item.purchase_value}</td>
-                    <td>{item.current_price}</td>
-                    <td>{item.total_dividends}</td>
-                    <td>{item.value_difference}</td>
-                    <td>{item.balance}</td>
-                    <td>{item.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <Box sx={{ marginTop: 4 }}>
+          <ul>
+            {data.map(item => (
+              <li key={item.id}>
+                <Typography variant="body1" paragraph>
+                  {item.message}
+                </Typography>
+              </li>
+            ))}
+          </ul>
+        </Box>
       </Box>
     </Container>
   );

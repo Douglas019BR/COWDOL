@@ -39,3 +39,7 @@ genbadge
 wsgi_handler.py
 serverless_wsgi.py
 config.py
+
+/frontend/node_modules
+/frontend/.next
+/frontend/.env
