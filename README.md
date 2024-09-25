@@ -48,10 +48,12 @@ npm run start
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-### Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Contributing
+
+Thank you for your interest in contributing to this project! We welcome all contributions, regardless of experience level. Please refer to the [Contributing Guidelines](./CONTRIBUTING.md) for detailed instructions on how to get started.
+
 
 ### Contact
-For any inquiries, please contact [douglassermarini@gmail.com].
+For any inquiries, please contact [douglassermarini@gmail.com] or another colaborator.
 
 
