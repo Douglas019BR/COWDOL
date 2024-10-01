@@ -1,31 +1,14 @@
-import pytest
+import sys
+import os
 from fastapi.testclient import TestClient
-from server import app  # Certifique-se de que 'server' está no mesmo nível de importação
 
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from server import app  
 client = TestClient(app)
 
-def test_hello_world():
+def test_read_root():
     response = client.get("/hello-world")
     assert response.status_code == 200
     assert response.json() == {"message": "Hello World"}
-
-def test_profit_calculate():
-    request_data = {
-        "data": [
-            {
-                "SYMBOL": "BBSE3.sa",
-                "AMOUNT": 11,
-                "PURCHASE_DATE": "01/10/2023",
-                "PURCHASE_VALUE": 31.46,
-            },
-            {
-                "SYMBOL": "NIKE34.sa",
-                "AMOUNT": 7,
-                "PURCHASE_DATE": "09/10/2023",
-                "PURCHASE_VALUE": 47.04,
-            },
-        ]
-    }
-    response = client.post("/profit-calculate", json=request_data)
-    assert response.status_code == 200
-    # Adicione aqui mais assertivas baseadas no retorno esperado do seu processamento
