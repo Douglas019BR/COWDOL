@@ -24,6 +24,7 @@ backend/.pytest_cache/
 backend/.mypy_cache/
 backend/.coverage
 backend/.coverage.*
+backend/htmlcov/
 *.pyc
 
 # Arquivos de logs
