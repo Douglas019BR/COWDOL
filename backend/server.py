@@ -1,3 +1,4 @@
+import logging
 from yfinance_functions import process_symbol
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,12 +22,19 @@ app.add_middleware(
 async def profit_calculate(request: dict):
     print(request)
     results = []
-    # import ipdb;ipdb.set_trace()
     for row in request["data"]:
-        symbol_result = process_symbol(
-            row["SYMBOL"], row["AMOUNT"], row["PURCHASE_DATE"], row["PURCHASE_VALUE"]
-        )
-        symbol_result["symbol"] = row["SYMBOL"]
-        symbol_result["amount"] = row["AMOUNT"]
-        results.append(symbol_result)
+        try:
+            symbol_result = process_symbol(
+                row["SYMBOL"], row["AMOUNT"], row["PURCHASE_DATE"], row["PURCHASE_VALUE"]
+            )
+            symbol_result["symbol"] = row["SYMBOL"]
+            symbol_result["amount"] = row["AMOUNT"]
+            results.append(symbol_result)
+        except Exception as e:
+            logging.error(f"Error processing symbol {row['SYMBOL']}: {e}")
+            continue
+        
+    if not results:
+        return {"message": "No data"}
+    
     return results

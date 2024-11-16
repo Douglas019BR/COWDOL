@@ -26,13 +26,15 @@ def get_current_price(symbol: str) -> float:
         symbol = f"{symbol.split('.')[0]}F.sa"
         stock = yf.Ticker(symbol)
         current_price = stock.history(period="1d")["Close"].iloc[0]
+    except Exception:
+        raise Exception
     return current_price
 
 
 def process_symbol(
     symbol: str, amount: int, purchase_date: str, purchase_value: float
 ) -> dict:  # no teste mockar get_dividends e get_current_price
-    
+
     dividends = get_dividends(symbol, purchase_date)
     current_price = get_current_price(symbol)
     total_dividends = sum(dividends.values()) * amount if dividends else 0
