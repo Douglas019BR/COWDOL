@@ -2,22 +2,27 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StockPortfolio from './pages/StockPortfolio';
 import HelloWorldPage from './pages/HelloWorldPage'; 
+import Layout from './components/Layout/index';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <StockPortfolio />,
+    element: <Layout />,
     children: [
       {
+        path: "",
+        element: <StockPortfolio />,
+      },
+      {
         path: "hello",
-        element: <HelloWorldPage />
-      }
-    ]
-  }
+        element: <HelloWorldPage />,
+      },
+    ],
+  },
 ], {
   future: {
     v7_startTransition: true,
-    v7_relativeSplatPath: true
+    v7_relativeSplatPath: true,
   }
 });
 
