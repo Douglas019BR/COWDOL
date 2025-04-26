@@ -1,0 +1,25 @@
+# Comprimento máximo de linha para todas as regras
+line-length = 79
+
+# Lint settings
+[lint]
+# Regras selecionadas
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "N",    # pep8-naming
+    "D",    # pydocstyle
+]
+ignore = ["D203", "D212"]  # Conflitam com outras regras de docstring
+
+# Formatter settings
+[format]
+docstring-code-line-length = 79
+# Usar aspas duplas por padrão
+quote-style = "double"
+# Indent com 4 espaços
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
