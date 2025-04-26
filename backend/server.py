@@ -1,6 +1,7 @@
-from yfinance_functions import process_symbol
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from yfinance_functions import process_symbol
 
 app = FastAPI()
 

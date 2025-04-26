@@ -1,9 +1,9 @@
+import csv
 from datetime import datetime
 from typing import List
 
 import pytz
 import yfinance as yf
-import csv
 
 
 def get_dividends(symbol: str, start_date: str) -> dict:
