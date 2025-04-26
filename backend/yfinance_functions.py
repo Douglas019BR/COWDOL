@@ -28,7 +28,10 @@ def get_current_price(symbol: str) -> float:
         current_price = stock.history(period="1d")["Close"].iloc[0]
     return current_price
 
-def process_symbol(symbol: str,amount :int, purchase_date: str,purchase_value:float) -> dict:
+
+def process_symbol(
+    symbol: str, amount: int, purchase_date: str, purchase_value: float
+) -> dict:
     dividends = get_dividends(symbol, purchase_date)
     current_price = get_current_price(symbol)
     total_dividends = sum(dividends.values()) * amount if dividends else 0
@@ -38,11 +41,16 @@ def process_symbol(symbol: str,amount :int, purchase_date: str,purchase_value:fl
     value_difference = current_value - purchase_total
     balance = value_difference + total_dividends
 
-    return {"current_value": current_value, "purchase_total": purchase_total, "value_difference": value_difference, "balance": balance, "total_dividends": total_dividends}
+    return {
+        "current_value": current_value,
+        "purchase_total": purchase_total,
+        "value_difference": value_difference,
+        "balance": balance,
+        "total_dividends": total_dividends,
+    }
 
 
-
-def process_portfolio(filename : str) -> List[dict]:
+def process_portfolio(filename: str) -> List[dict]:
     results = []
 
     with open(filename, newline="", encoding="utf-8") as csvfile:
@@ -56,7 +64,9 @@ def process_portfolio(filename : str) -> List[dict]:
 
             dividends = get_dividends(symbol, purchase_date)
             current_price = get_current_price(symbol)
-            total_dividends = sum(dividends.values()) * amount if dividends else 0
+            total_dividends = (
+                sum(dividends.values()) * amount if dividends else 0
+            )
 
             current_value = current_price * amount
             purchase_total = purchase_value * amount
