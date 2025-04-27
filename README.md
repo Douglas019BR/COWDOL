@@ -1,20 +1,50 @@
-Este e um projeto open-source idealizado por mim, fique a vontade para construir junto comigo, estou nos passos iniciais, ou seja, ainda nao consegui terminar o setup e as funcionalidades do projeto, mas estou tentando deixar em um formato possivel de contribuicao.
+# COWDOL - Plataforma de Gestão de Investimentos
 
+## Visão Geral
 
-proximos passos :
+COWDOL é uma plataforma de gestão de investimentos open-source projetada para ajudá-lo a tomar decisões financeiras informadas. O sistema permite que você carregue seus dados de investimento e gera dashboards abrangentes que fornecem um entendimento claro do seu desempenho financeiro.
 
-Corrigir o front
-adicionar a soma dos valores na analise
-adicionar o lucro ou prejuizo total na analise
-adicionar as 5 melhores e as 5 piores escolhas na analise
+### Funcionalidades Principais
 
-Em breve vou reescrever esse readme.md
+- **Dashboard de Investimentos**: Visualize e acompanhe o desempenho do seu portfólio de investimentos
+- **Análise Financeira**: Métricas detalhadas sobre seus retornos de investimento, incluindo lucro/prejuízo total
+- **Calculadora de Juros Compostos**: Simule vários cenários de investimento
+- **Recomendador de Fundos de Investimento**: Obtenha recomendações baseadas em dados para potenciais investimentos
 
+## Filosofia do Projeto
 
-Para contribuir, crie um issue dizendo o que vai fazer, faca um fork do projeto, na sua branch referencie o numero do issue que voce abriu, apos pronta as alteracoes, abra um PR para a branch main que vou verificar.
+COWDOL é construído com um compromisso com:
 
+- **Desenvolvimento Open Source**: Permitindo contribuição e transparência da comunidade
+- **Educação**: Servindo como implementação de referência para práticas modernas de engenharia de software
+- **Capacitação Financeira**: Fornecendo ferramentas que ajudam as pessoas a tomar melhores decisões de investimento
 
-# BACKEND
+## Arquitetura Técnica
+
+O projeto é estruturado com microsserviços em containers, separando as preocupações de frontend e backend:
+
+- **Frontend**: Interface moderna construída com princípios de design responsivo
+- **Backend**: Arquitetura de API escalável servindo dados financeiros e análises
+- **Containerização**: Garantindo ambientes de desenvolvimento e implantação consistentes
+
+Esta separação fornece diversos benefícios:
+- Escalabilidade independente dos componentes
+- Flexibilidade tecnológica
+- Colaboração mais fácil para contribuidores
+- Testes e implantação simplificados
+
+## Roadmap de Desenvolvimento
+
+Prioridades atuais:
+
+- Corrigir problemas do frontend
+- Adicionar soma total de valores na análise de portfólio
+- Implementar cálculo de lucro/prejuízo total
+- Adicionar análise de desempenho dos "5 Melhores" e "5 Piores" investimentos
+
+## Primeiros Passos
+
+### Configuração do Backend
 
 ```sh
 cd backend/
@@ -28,13 +58,14 @@ pip install -r requirements.txt
 ### Run the script:
 ```sh
 fastapi run server.py --host 127.0.0.1
-
 ```
 
-# FRONTEND
+### Configuração do Frontend
+
 ```sh
 cd frontend/
 ```
+
 ### Install the required libraries:
 ```sh
 npm install
@@ -44,16 +75,34 @@ npm install
 ```sh
 npm run start
 ```
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+## Contribuindo
 
-## Contributing
+Obrigado pelo seu interesse em contribuir com o COWDOL! Recebemos contribuições de desenvolvedores de todos os níveis de experiência.
 
-Thank you for your interest in contributing to this project! We welcome all contributions, regardless of experience level. Please refer to the [Contributing Guidelines](./CONTRIBUTING.md) for detailed instructions on how to get started.
+Para contribuir:
+1. Crie um issue descrevendo o que você planeja trabalhar
+2. Faça um fork do repositório
+3. Crie uma branch referenciando o número do seu issue (ex: `feature/issue-42`)
+4. Faça suas alterações seguindo nossos padrões de qualidade de código
+5. Submeta um pull request para a branch main
 
+Nos esforçamos para manter uma alta qualidade de código através de:
+- Padrões de codificação consistentes
+- Cobertura abrangente de testes
+- Princípios de arquitetura limpa
+- Documentação detalhada
 
-### Contact
-For any inquiries, please contact [douglassermarini@gmail.com] or another colaborator.
+Este projeto é focado em investimentos nacionais brasileiros, priorizando as necessidades específicas do mercado financeiro brasileiro e suas particularidades regulatórias.
+
+Para mais detalhes, consulte nossas [Diretrizes de Contribuição](./CONTRIBUTING.md).
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](./LICENSE) para detalhes.
+
+## Contato
+
+Para quaisquer dúvidas ou informações, entre em contato com [douglassermarini@gmail.com] ou outro colaborador.
 
 
