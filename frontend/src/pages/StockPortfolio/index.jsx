@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem } from '@mui/material';
+import { Container, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem, CircularProgress } from '@mui/material';
 import Papa from 'papaparse';
 
 import DataTable from '../../components/common/Table';
@@ -12,6 +12,7 @@ function StockPortfolio() {
   const [data, setData] = useState([]);
   const [errors, setErrors] = useState([]);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = e => {
     const file = e.target.files[0];
@@ -31,6 +32,7 @@ function StockPortfolio() {
     }
 
     try {
+      setLoading(true);
       const results = await calculateProfit(parsedCsvData);
 
       const validResults = [];
@@ -53,6 +55,8 @@ function StockPortfolio() {
       }
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,7 +83,16 @@ function StockPortfolio() {
           accept=".csv"
         />
 
-        {data.length > 0 && (
+        {loading && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+            <CircularProgress />
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Processando arquivo, por favor aguarde...
+            </Typography>
+          </Box>
+        )}
+
+        {!loading && data.length > 0 && (
           <DataTable
             columns={stockTableColumns}
             data={data}
