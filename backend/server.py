@@ -10,6 +10,7 @@ origins = [
     "http://localhost*",
 ]
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -25,8 +26,30 @@ async def root():
 
 
 @app.post("/profit-calculate")
-async def profit_calculate(request: dict):
-    print(request)
+async def profit_calculate(request: dict) -> list[dict]:
+    """
+    Calculate profit for a list of stock investments.
+    
+    Accepts a JSON request containing stock data and returns calculation results.
+    
+    Example request:
+    {
+        "data": [
+            {
+                "SYMBOL": "BBSE3.sa",
+                "AMOUNT": 11,
+                "PURCHASE_DATE": "01/10/2023",
+                "PURCHASE_VALUE": 31.46
+            },
+            {
+                "SYMBOL": "NIKE34.sa",
+                "AMOUNT": 7,
+                "PURCHASE_DATE": "09/10/2023",
+                "PURCHASE_VALUE": 47.04
+            }
+        ]
+    }
+    """
     results = []
     for row in request["data"]:
         symbol_result = process_symbol(
@@ -39,21 +62,3 @@ async def profit_calculate(request: dict):
         symbol_result["amount"] = row["AMOUNT"]
         results.append(symbol_result)
     return results
-
-
-# {
-#     "data": [
-#         {
-#             "SYMBOL": "BBSE3.sa",
-#             "AMOUNT": 11,
-#             "PURCHASE_DATE": "01/10/2023",
-#             "PURCHASE_VALUE": 31.46,
-#         }
-#         {
-#             "SYMBOL": "NIKE34.sa",
-#             "AMOUNT": 7,
-#             "PURCHASE_DATE": "09/10/2023",
-#             "PURCHASE_VALUE": 47.04,
-#         }
-#     ]
-# }
