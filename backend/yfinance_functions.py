@@ -36,7 +36,7 @@ def process_symbol(
         dividends = get_dividends(symbol, purchase_date)
         current_price = get_current_price(symbol)
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": {"message": str(e)}}
     total_dividends = sum(dividends.values()) * amount if dividends else 0
 
     current_value = current_price * amount
