@@ -32,8 +32,11 @@ def get_current_price(symbol: str) -> float:
 def process_symbol(
     symbol: str, amount: int, purchase_date: str, purchase_value: float
 ) -> dict:
-    dividends = get_dividends(symbol, purchase_date)
-    current_price = get_current_price(symbol)
+    try:
+        dividends = get_dividends(symbol, purchase_date)
+        current_price = get_current_price(symbol)
+    except Exception as e:
+        return {"error": {"message": str(e)}}
     total_dividends = sum(dividends.values()) * amount if dividends else 0
 
     current_value = current_price * amount
