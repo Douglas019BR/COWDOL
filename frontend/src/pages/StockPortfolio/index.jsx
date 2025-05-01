@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem } from '@mui/material';
 import Papa from 'papaparse';
 
 import DataTable from '../../components/common/Table';
@@ -10,6 +10,8 @@ import { stockTableColumns } from '../../constants/tableColumns';
 
 function StockPortfolio() {
   const [data, setData] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   const handleFileChange = e => {
     const file = e.target.files[0];
@@ -30,11 +32,32 @@ function StockPortfolio() {
 
     try {
       const results = await calculateProfit(parsedCsvData);
-      const formattedData = results.map(formatStockData);
+
+      const validResults = [];
+      const errorResults = [];
+
+      results.forEach(item => {
+        if (item.error) {
+          errorResults.push(item);
+        } else {
+          validResults.push(item);
+        }
+      });
+
+      const formattedData = validResults.map(formatStockData);
       setData(formattedData);
+
+      if (errorResults.length > 0) {
+        setErrors(errorResults);
+        setShowErrorDialog(true);
+      }
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
     }
+  };
+
+  const handleCloseErrorDialog = () => {
+    setShowErrorDialog(false);
   };
 
   return (
@@ -51,18 +74,42 @@ function StockPortfolio() {
           Stock Portfolio Analyzer
         </Typography>
 
-        <FileUpload 
+        <FileUpload
           onFileSelect={handleFileChange}
           accept=".csv"
         />
 
         {data.length > 0 && (
-          <DataTable 
+          <DataTable
             columns={stockTableColumns}
             data={data}
             onRowClick={(row) => console.log('Row clicked:', row)}
           />
         )}
+
+        {/* Error Dialog */}
+        <Dialog open={showErrorDialog} onClose={handleCloseErrorDialog}>
+          <DialogTitle>Warming</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" gutterBottom>
+              The following errors occurred while processing the file:
+            </Typography>
+            <List>
+              {errors.map((error, index) => (
+                <ListItem key={index}>
+                  <Typography color="error">
+                    {error.symbol || "Ativo desconhecido"}: {error.error?.message || "Erro desconhecido"}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseErrorDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Container>
   );
