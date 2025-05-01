@@ -102,7 +102,7 @@ function StockPortfolio() {
 
         {/* Error Dialog */}
         <Dialog open={showErrorDialog} onClose={handleCloseErrorDialog}>
-          <DialogTitle>Warming</DialogTitle>
+          <DialogTitle>Warning</DialogTitle>
           <DialogContent>
             <Typography variant="body1" gutterBottom>
               The following errors occurred while processing the file:
