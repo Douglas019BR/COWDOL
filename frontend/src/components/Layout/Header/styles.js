@@ -8,10 +8,7 @@ export const StyledHeader = styled('header')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center', 
   backgroundColor: 'transparent',
-  position: 'fixed', // fixa no topo
-  top: 0,
-  left: 0,
-  zIndex: 100, // garante que fique acima de outros elementos
+  position: 'static', // mudado de 'fixed' para 'static'
   padding: 0,
   margin: 0,
 }));
