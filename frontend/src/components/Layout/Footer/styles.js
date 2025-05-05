@@ -6,13 +6,12 @@ export const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(2),
   textAlign: 'center',
-  position: 'absolute',
-  bottom: 0,
   width: '100%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   height: '60px',
+  marginTop: theme.spacing(4), // Add margin to separate from content
 }));
 
 export const FooterText = styled(Typography)(({ theme }) => ({
