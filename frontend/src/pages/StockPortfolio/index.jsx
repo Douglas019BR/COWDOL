@@ -72,7 +72,10 @@ function StockPortfolio() {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        gap: 4
+        gap: 4,
+        pt: 8,
+        mt: 2,
+        mb: 10
       }}>
         <Typography variant="h2" component="h1" gutterBottom>
           Stock Portfolio Analyzer
@@ -93,11 +96,20 @@ function StockPortfolio() {
         )}
 
         {!loading && data.length > 0 && (
-          <DataTable
-            columns={stockTableColumns}
-            data={data}
-            onRowClick={(row) => console.log('Row clicked:', row)}
-          />
+          <Box sx={{ width: '100%', mb: 2 }}>
+            <Box sx={{
+              border: '1px solid #e0e0e0',
+              borderRadius: 1,
+              boxShadow: 1
+            }}>
+              <DataTable
+                columns={stockTableColumns}
+                data={data}
+                onRowClick={(row) => console.log('Row clicked:', row)}
+                stickyHeader={true}
+              />
+            </Box>
+          </Box>
         )}
 
         {/* Error Dialog */}
