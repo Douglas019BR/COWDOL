@@ -2,6 +2,8 @@ import {
   Alert,
   AlertTitle,
   Box,
+  Button,
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -13,10 +15,50 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PortfolioUpload from '../../components/PortfolioUpload';
+import { calculateProfit } from '../../services/api';
+import {
+  calculateTotals,
+  formatCurrency,
+} from '../../utils/portfolio';
+
+function SummaryCard({ label, value, positive }) {
+  const color = positive === undefined ? 'text.primary' : positive ? 'success.main' : 'error.main';
+  return (
+    <Paper sx={{ p: 2, flex: 1, minWidth: 160 }}>
+      <Typography variant="body2" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography variant="h6" color={color}>
+        {formatCurrency(value)}
+      </Typography>
+    </Paper>
+  );
+}
 
 export default function Portfolio() {
   const { t } = useTranslation();
   const [parsed, setParsed] = useState(null);
+  const [holdings, setHoldings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
+
+  async function handleAnalyse() {
+    setLoading(true);
+    setApiError(null);
+    setHoldings([]);
+    try {
+      const response = await calculateProfit(parsed.holdings);
+      setHoldings(response.holdings ?? []);
+    } catch (error) {
+      setApiError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const successful = holdings.filter((holding) => !holding.error);
+  const failed = holdings.filter((holding) => holding.error);
+  const totals = calculateTotals(successful);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -25,6 +67,16 @@ export default function Portfolio() {
           {t('portfolio.title')}
         </Typography>
         <PortfolioUpload onParsed={setParsed} />
+        {parsed?.holdings?.length > 0 && (
+          <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={handleAnalyse}
+            disabled={loading}
+          >
+            {t('portfolio.analyse')}
+          </Button>
+        )}
       </Paper>
 
       {parsed?.errors?.length > 0 && (
@@ -34,45 +86,91 @@ export default function Portfolio() {
             <Typography key={`${error.row}-${index}`} variant="body2">
               {error.row > 0 ? `${t('errors.row')} ${error.row}: ` : ''}
               {error.messages
-                .map((message) =>
-                  t(`errors.${message}`, error.params ?? {}),
-                )
+                .map((message) => t(`errors.${message}`, error.params ?? {}))
                 .join(' ')}
             </Typography>
           ))}
         </Alert>
       )}
 
-      {parsed?.holdings?.length > 0 && (
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            {t('portfolio.preview', { count: parsed.holdings.length })}
-          </Typography>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('table.symbol')}</TableCell>
-                <TableCell align="right">{t('table.quantity')}</TableCell>
-                <TableCell>{t('table.purchaseDate')}</TableCell>
-                <TableCell align="right">
-                  {t('table.purchasePrice')}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {parsed.holdings.map((holding, index) => (
-                <TableRow key={`${holding.symbol}-${index}`}>
-                  <TableCell>{holding.symbol}</TableCell>
-                  <TableCell align="right">{holding.amount}</TableCell>
-                  <TableCell>{holding.purchase_date}</TableCell>
+      {loading && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <CircularProgress size={24} />
+          <Typography>{t('portfolio.analysing')}</Typography>
+        </Box>
+      )}
+
+      {apiError && <Alert severity="error">{apiError}</Alert>}
+
+      {failed.length > 0 && (
+        <Alert severity="warning">
+          <AlertTitle>{t('errors.processingTitle')}</AlertTitle>
+          {failed.map((holding) => (
+            <Typography key={holding.symbol} variant="body2">
+              {holding.symbol}: {holding.error}
+            </Typography>
+          ))}
+        </Alert>
+      )}
+
+      {successful.length > 0 && (
+        <>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <SummaryCard label={t('totals.invested')} value={totals.invested} />
+            <SummaryCard label={t('totals.current')} value={totals.current} />
+            <SummaryCard
+              label={t('totals.dividends')}
+              value={totals.dividends}
+              positive={totals.dividends >= 0}
+            />
+            <SummaryCard
+              label={t('totals.profitLoss')}
+              value={totals.profitLoss}
+              positive={totals.profitLoss >= 0}
+            />
+          </Box>
+
+          <Paper sx={{ p: 3, overflowX: 'auto' }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('table.symbol')}</TableCell>
+                  <TableCell align="right">{t('table.quantity')}</TableCell>
                   <TableCell align="right">
-                    {holding.purchase_value.toFixed(2)}
+                    {t('table.purchaseTotal')}
                   </TableCell>
+                  <TableCell align="right">{t('table.currentValue')}</TableCell>
+                  <TableCell align="right">{t('table.dividends')}</TableCell>
+                  <TableCell align="right">{t('table.difference')}</TableCell>
+                  <TableCell align="right">{t('table.balance')}</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+              </TableHead>
+              <TableBody>
+                {successful.map((holding, index) => (
+                  <TableRow key={`${holding.symbol}-${index}`}>
+                    <TableCell>{holding.symbol}</TableCell>
+                    <TableCell align="right">{holding.amount}</TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(holding.purchase_total, holding.currency)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(holding.current_value, holding.currency)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(holding.total_dividends, holding.currency)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(holding.value_difference, holding.currency)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(holding.balance, holding.currency)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </>
       )}
     </Box>
   );
