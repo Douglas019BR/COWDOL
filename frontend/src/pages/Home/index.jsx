@@ -8,7 +8,12 @@ export default function Home() {
   return (
     <Box>
       <Paper sx={{ p: { xs: 2, md: 4 } }} elevation={2}>
-        <Typography variant="h3" component="h1" gutterBottom>
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{ fontSize: { xs: '2rem', sm: '3rem' } }}
+        >
           {t('home.title')}
         </Typography>
         <Typography variant="body1" color="text.secondary">
