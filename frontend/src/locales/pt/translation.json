@@ -20,6 +20,9 @@
     "analyse": "Analisar carteira",
     "analysing": "Buscando dados de mercado..."
   },
+  "currency": {
+    "label": "Cotações de moedas em relação ao BRL"
+  },
   "recommendations": {
     "title": "Recomendações de fundos",
     "strong": "Positivo",
