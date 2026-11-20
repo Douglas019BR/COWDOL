@@ -19,6 +19,10 @@
     "analyse": "Analyse portfolio",
     "analysing": "Fetching market data..."
   },
+  "ranking": {
+    "best": "Top 5 best investments",
+    "worst": "Top 5 worst investments"
+  },
   "totals": {
     "invested": "Total invested",
     "current": "Current value",
