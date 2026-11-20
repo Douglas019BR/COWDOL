@@ -1,5 +1,6 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -13,6 +14,14 @@ export default function Home() {
         <Typography variant="body1" color="text.secondary">
           {t('home.description')}
         </Typography>
+        <Button
+          component={Link}
+          to="/portfolio"
+          variant="contained"
+          sx={{ mt: 3 }}
+        >
+          {t('home.openPortfolio')}
+        </Button>
       </Paper>
     </Box>
   );
