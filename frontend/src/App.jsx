@@ -1,33 +1,27 @@
-import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import StockPortfolio from './pages/StockPortfolio';
-import HelloWorldPage from './pages/HelloWorldPage'; 
-import Layout from './components/Layout/index';
+import Layout from './components/Layout';
+import Home from './pages/Home';
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      children: [{ index: true, element: <Home /> }],
+    },
+  ],
   {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "",
-        element: <StockPortfolio />,
-      },
-      {
-        path: "hello",
-        element: <HelloWorldPage />,
-      },
-    ],
+    future: {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_skipActionErrorRevalidation: true,
+    },
   },
-], {
-  future: {
-    v7_startTransition: true,
-    v7_relativeSplatPath: true,
-  }
-});
+);
 
-function App() {
+export default function App() {
   return <RouterProvider router={router} />;
 }
-
-export default App;

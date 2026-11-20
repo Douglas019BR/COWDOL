@@ -1,0 +1,16 @@
+{
+  "appName": "COWDOL",
+  "tagline": "Plataforma de gestão de investimentos",
+  "home": {
+    "title": "Seus investimentos, com clareza",
+    "description": "Envie o CSV da sua carteira para analisar preços, dividendos e lucro ou prejuízo."
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "EN",
+    "pt": "PT"
+  },
+  "footer": {
+    "copyright": "© {{year}} COWDOL. Todos os direitos reservados."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "appName": "COWDOL",
+  "tagline": "Investment management platform",
+  "home": {
+    "title": "Your investments, clearly",
+    "description": "Upload your portfolio CSV to analyse prices, dividends and profit and loss."
+  },
+  "language": {
+    "label": "Language",
+    "en": "EN",
+    "pt": "PT"
+  },
+  "footer": {
+    "copyright": "© {{year}} COWDOL. All rights reserved."
+  }
+}
