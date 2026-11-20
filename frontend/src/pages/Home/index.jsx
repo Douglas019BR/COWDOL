@@ -14,14 +14,14 @@ export default function Home() {
         <Typography variant="body1" color="text.secondary">
           {t('home.description')}
         </Typography>
-        <Button
-          component={Link}
-          to="/portfolio"
-          variant="contained"
-          sx={{ mt: 3 }}
-        >
-          {t('home.openPortfolio')}
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, mt: 3, flexWrap: 'wrap' }}>
+          <Button component={Link} to="/portfolio" variant="contained">
+            {t('home.openPortfolio')}
+          </Button>
+          <Button component={Link} to="/simulator" variant="outlined">
+            {t('home.openSimulator')}
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );
