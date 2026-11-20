@@ -19,6 +19,10 @@
     "analyse": "Analisar carteira",
     "analysing": "Buscando dados de mercado..."
   },
+  "ranking": {
+    "best": "5 melhores investimentos",
+    "worst": "5 piores investimentos"
+  },
   "totals": {
     "invested": "Total investido",
     "current": "Valor atual",
