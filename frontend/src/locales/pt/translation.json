@@ -20,6 +20,12 @@
     "analyse": "Analisar carteira",
     "analysing": "Buscando dados de mercado..."
   },
+  "recommendations": {
+    "title": "Recomendações de fundos",
+    "strong": "Positivo",
+    "review": "Avaliar",
+    "disclaimer": "Heurística baseada em retorno e dividendos. Não é recomendação de investimento."
+  },
   "simulator": {
     "title": "Simulador de juros compostos",
     "initial": "Valor inicial (R$)",

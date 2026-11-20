@@ -20,6 +20,12 @@
     "analyse": "Analyse portfolio",
     "analysing": "Fetching market data..."
   },
+  "recommendations": {
+    "title": "Fund recommendations",
+    "strong": "Strong",
+    "review": "Review",
+    "disclaimer": "Heuristic based on return and dividend yield. Not financial advice."
+  },
   "simulator": {
     "title": "Compound interest simulator",
     "initial": "Initial amount (R$)",
