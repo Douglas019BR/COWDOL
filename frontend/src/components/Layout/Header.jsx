@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import CurrencyTicker from '../CurrencyTicker';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -44,6 +45,9 @@ export default function Header() {
             {t('language.pt')}
           </Button>
         </ButtonGroup>
+      </Box>
+      <Box sx={{ maxWidth: 1100, mx: 'auto', px: 2 }}>
+        <CurrencyTicker />
       </Box>
     </Box>
   );
