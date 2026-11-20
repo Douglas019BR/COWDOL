@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Portfolio from './pages/Portfolio';
+import Simulator from './pages/Simulator';
 
 const router = createBrowserRouter(
   [
@@ -11,6 +12,7 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <Home /> },
         { path: 'portfolio', element: <Portfolio /> },
+        { path: 'simulator', element: <Simulator /> },
       ],
     },
   ],
