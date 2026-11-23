@@ -30,6 +30,22 @@ def test_profit_calculate_accepts_legacy_csv_field_names(
     assert holding["currency"] == "BRL"
 
 
+def test_profit_calculate_accepts_iso_dates(client: TestClient) -> None:
+    payload = {
+        "data": [
+            {
+                "SYMBOL": "TEST3.sa",
+                "AMOUNT": 10,
+                "PURCHASE_DATE": "2024-01-01",
+                "PURCHASE_VALUE": 10.0,
+            }
+        ]
+    }
+    response = client.post("/profit-calculate", json=payload)
+    assert response.status_code == 200
+    assert response.json()["holdings"][0]["symbol"] == "TEST3.sa"
+
+
 def test_profit_calculate_rejects_invalid_holdings(
     client: TestClient,
 ) -> None:

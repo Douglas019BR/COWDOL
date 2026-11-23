@@ -58,17 +58,25 @@ class YahooFinanceProvider:
         if cached and time.monotonic() - cached[0] < self._ttl:
             return cached[1]
         try:
-            history = yf.Ticker(symbol).history(period="5d")
+            ticker = yf.Ticker(symbol)
+            history = ticker.history(period="5d")
+            metadata = ticker.history_metadata
         except YFRateLimitError as exc:
             raise MarketDataError(
                 "Market data provider is rate limited. Try again later."
             ) from exc
         if history.empty:
             raise MarketDataError(f"No price data found for {symbol}")
+        currency = metadata.get("currency")
+        if currency != "BRL":
+            raise MarketDataError(
+                f"Unsupported currency {currency or 'unknown'} for {symbol}; "
+                "only BRL instruments are supported"
+            )
         quote = Quote(
             symbol=symbol,
             price=float(history["Close"].iloc[-1]),
-            currency="BRL",
+            currency=currency,
         )
         self._quotes[symbol] = (time.monotonic(), quote)
         return quote
@@ -80,15 +88,19 @@ class YahooFinanceProvider:
         if cached and time.monotonic() - cached[0] < self._ttl:
             return cached[1]
         try:
-            series = yf.Ticker(symbol).dividends
+            history = yf.Ticker(symbol).history(
+                period="max", actions=True, auto_adjust=False
+            )
         except YFRateLimitError as exc:
             raise MarketDataError(
                 "Market data provider is rate limited. Try again later."
             ) from exc
+        if history.empty or "Dividends" not in history.columns:
+            raise MarketDataError(f"No dividend history available for {symbol}")
         dividends = tuple(
             Dividend(ex_date=timestamp.date(), amount=float(value))
-            for timestamp, value in series.items()
-            if timestamp.date() >= since
+            for timestamp, value in history["Dividends"].items()
+            if value > 0 and timestamp.date() >= since
         )
         self._dividends[key] = (time.monotonic(), dividends)
         return dividends

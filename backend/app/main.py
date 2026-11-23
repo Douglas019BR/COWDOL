@@ -19,9 +19,12 @@ app.add_middleware(
 )
 
 
+_provider = YahooFinanceProvider(settings.cache_ttl_seconds)
+
+
 def get_provider() -> MarketDataProvider:
-    """Provide a market data provider for each request."""
-    return YahooFinanceProvider(settings.cache_ttl_seconds)
+    """Provide a shared, cached market data provider."""
+    return _provider
 
 
 @app.get("/health")

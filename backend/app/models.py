@@ -6,12 +6,16 @@ from pydantic import AliasChoices, BaseModel, Field, field_validator
 
 
 def parse_brazilian_date(value: object) -> date:
-    """Parse a DD/MM/YYYY string into a date."""
+    """Parse an ISO or DD/MM/YYYY string into a date."""
     if isinstance(value, date):
         return value
     if isinstance(value, str):
-        return datetime.strptime(value, "%d/%m/%Y").date()
-    raise ValueError("date must be a date or a DD/MM/YYYY string")
+        text = value.strip()
+        try:
+            return date.fromisoformat(text)
+        except ValueError:
+            return datetime.strptime(text, "%d/%m/%Y").date()
+    raise ValueError("date must be a date, ISO string or DD/MM/YYYY string")
 
 
 class HoldingInput(BaseModel):
