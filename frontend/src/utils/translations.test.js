@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { flattenKeys } from './translations';
+import { findTranslationKeys, flattenKeys } from './translations';
 
 const srcRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readLocale = (language) =>
@@ -31,13 +31,19 @@ describe('translations', () => {
     const keys = new Set(flattenKeys(readLocale('en')));
     const used = new Set();
     listSourceFiles(srcRoot)
-      .filter((path) => /\.(jsx?|js)$/.test(path))
+      .filter((path) => /\.(jsx?|js)$/.test(path) && !/\.test\./.test(path))
       .forEach((path) => {
         const source = readFileSync(path, 'utf8');
-        for (const match of source.matchAll(/\bt\('([^']+)'\)/g)) {
-          used.add(match[1]);
-        }
+        findTranslationKeys(source).forEach((key) => used.add(key));
       });
     expect([...used].filter((key) => !keys.has(key))).toEqual([]);
+  });
+});
+
+describe('findTranslationKeys', () => {
+  it('recognizes both quote styles and surrounding whitespace', () => {
+    expect(
+      findTranslationKeys(`t('one.key'); t("two.key"); t( 'three.key' );`),
+    ).toEqual(['one.key', 'two.key', 'three.key']);
   });
 });
