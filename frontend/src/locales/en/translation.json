@@ -34,7 +34,8 @@
     "invalidDate": "Date must use DD/MM/YYYY.",
     "parseError": "Parse error: {{message}}",
     "invalidFileType": "Please select a .csv file.",
-    "fileTooLarge": "The file must be smaller than 1 MB."
+    "fileTooLarge": "The file must be smaller than 1 MB.",
+    "fileReadFailed": "The file could not be read. Please try again."
   },
   "footer": {
     "copyright": "© {{year}} COWDOL. All rights reserved."

@@ -34,7 +34,8 @@
     "invalidDate": "A data deve usar DD/MM/AAAA.",
     "parseError": "Erro de leitura: {{message}}",
     "invalidFileType": "Selecione um arquivo .csv.",
-    "fileTooLarge": "O arquivo deve ter menos de 1 MB."
+    "fileTooLarge": "O arquivo deve ter menos de 1 MB.",
+    "fileReadFailed": "Não foi possível ler o arquivo. Tente novamente."
   },
   "footer": {
     "copyright": "© {{year}} COWDOL. Todos os direitos reservados."
