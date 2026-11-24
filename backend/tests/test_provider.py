@@ -134,3 +134,38 @@ def test_quote_translates_rate_limit_errors() -> None:
     with patch("app.services.provider.yf.Ticker", return_value=RateLimitedTicker()):
         with pytest.raises(MarketDataError, match="rate limited"):
             provider.quote("PETR4.sa")
+
+
+def test_quote_cache_is_bounded() -> None:
+    provider = YahooFinanceProvider()
+    tickers = [FakeTicker(price=index) for index in range(1, 4)]
+    with (
+        patch.object(YahooFinanceProvider, "MAX_CACHE_ENTRIES", 2),
+        patch("app.services.provider.yf.Ticker", side_effect=tickers),
+    ):
+        for symbol in ("A.sa", "B.sa", "C.sa"):
+            provider.quote(symbol)
+    assert set(provider._quotes) == {"B.sa", "C.sa"}
+
+
+def test_dividend_cache_is_bounded() -> None:
+    provider = YahooFinanceProvider()
+    ticker = FakeTicker(dividends={datetime(2025, 1, 1, tzinfo=UTC): 1.0})
+    with (
+        patch.object(YahooFinanceProvider, "MAX_CACHE_ENTRIES", 2),
+        patch("app.services.provider.yf.Ticker", return_value=ticker),
+    ):
+        for month in (1, 2, 3):
+            provider.dividends("PETR4.sa", date(2024, month, 1))
+    assert len(provider._dividends) == 2
+
+
+def test_expired_cache_entries_are_removed() -> None:
+    provider = YahooFinanceProvider(cache_ttl_seconds=0)
+    with patch(
+        "app.services.provider.yf.Ticker",
+        side_effect=[FakeTicker(), FakeTicker()],
+    ):
+        provider.quote("A.sa")
+        provider.quote("B.sa")
+    assert list(provider._quotes) == ["B.sa"]

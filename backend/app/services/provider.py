@@ -5,10 +5,13 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass
 from datetime import date
-from typing import Protocol
+from typing import Protocol, TypeVar
 
 import yfinance as yf
 from yfinance.exceptions import YFRateLimitError
+
+CacheKey = TypeVar("CacheKey")
+CacheValue = TypeVar("CacheValue")
 
 
 class MarketDataError(Exception):
@@ -47,10 +50,26 @@ class MarketDataProvider(Protocol):
 class YahooFinanceProvider:
     """Market data provider backed by the yfinance library."""
 
+    MAX_CACHE_ENTRIES = 256
+
     def __init__(self, cache_ttl_seconds: int = 300) -> None:
         self._ttl = cache_ttl_seconds
         self._quotes: dict[str, tuple[float, Quote]] = {}
         self._dividends: dict[tuple[str, date], tuple[float, tuple[Dividend, ...]]] = {}
+
+    def _prune(self, cache: dict[CacheKey, tuple[float, CacheValue]]) -> None:
+        """Drop expired entries and bound the cache size."""
+        now = time.monotonic()
+        expired = [
+            key for key, (stored_at, _) in cache.items() if now - stored_at >= self._ttl
+        ]
+        for key in expired:
+            del cache[key]
+        overflow = len(cache) - self.MAX_CACHE_ENTRIES + 1
+        if overflow > 0:
+            oldest = sorted(cache.items(), key=lambda item: item[1][0])[:overflow]
+            for key, _ in oldest:
+                del cache[key]
 
     def quote(self, symbol: str) -> Quote:
         """Return the latest quote, using a short-lived cache."""
@@ -78,6 +97,7 @@ class YahooFinanceProvider:
             price=float(history["Close"].iloc[-1]),
             currency=currency,
         )
+        self._prune(self._quotes)
         self._quotes[symbol] = (time.monotonic(), quote)
         return quote
 
@@ -102,5 +122,6 @@ class YahooFinanceProvider:
             for timestamp, value in history["Dividends"].items()
             if value > 0 and timestamp.date() >= since
         )
+        self._prune(self._dividends)
         self._dividends[key] = (time.monotonic(), dividends)
         return dividends
