@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import dataclass
 from datetime import date
@@ -54,6 +55,7 @@ class YahooFinanceProvider:
 
     def __init__(self, cache_ttl_seconds: int = 300) -> None:
         self._ttl = cache_ttl_seconds
+        self._lock = threading.Lock()
         self._quotes: dict[str, tuple[float, Quote]] = {}
         self._dividends: dict[tuple[str, date], tuple[float, tuple[Dividend, ...]]] = {}
 
@@ -73,9 +75,10 @@ class YahooFinanceProvider:
 
     def quote(self, symbol: str) -> Quote:
         """Return the latest quote, using a short-lived cache."""
-        cached = self._quotes.get(symbol)
-        if cached and time.monotonic() - cached[0] < self._ttl:
-            return cached[1]
+        with self._lock:
+            cached = self._quotes.get(symbol)
+            if cached and time.monotonic() - cached[0] < self._ttl:
+                return cached[1]
         try:
             ticker = yf.Ticker(symbol)
             history = ticker.history(period="5d")
@@ -97,16 +100,18 @@ class YahooFinanceProvider:
             price=float(history["Close"].iloc[-1]),
             currency=currency,
         )
-        self._prune(self._quotes)
-        self._quotes[symbol] = (time.monotonic(), quote)
+        with self._lock:
+            self._prune(self._quotes)
+            self._quotes[symbol] = (time.monotonic(), quote)
         return quote
 
     def dividends(self, symbol: str, since: date) -> tuple[Dividend, ...]:
         """Return dividends since a date, using a short-lived cache."""
         key = (symbol, since)
-        cached = self._dividends.get(key)
-        if cached and time.monotonic() - cached[0] < self._ttl:
-            return cached[1]
+        with self._lock:
+            cached = self._dividends.get(key)
+            if cached and time.monotonic() - cached[0] < self._ttl:
+                return cached[1]
         try:
             history = yf.Ticker(symbol).history(
                 period="max", actions=True, auto_adjust=False
@@ -122,6 +127,7 @@ class YahooFinanceProvider:
             for timestamp, value in history["Dividends"].items()
             if value > 0 and timestamp.date() >= since
         )
-        self._prune(self._dividends)
-        self._dividends[key] = (time.monotonic(), dividends)
+        with self._lock:
+            self._prune(self._dividends)
+            self._dividends[key] = (time.monotonic(), dividends)
         return dividends

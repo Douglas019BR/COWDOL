@@ -1,5 +1,6 @@
 """Unit tests for the market data provider."""
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, date, datetime
 from unittest.mock import patch
 
@@ -158,6 +159,21 @@ def test_dividend_cache_is_bounded() -> None:
         for month in (1, 2, 3):
             provider.dividends("PETR4.sa", date(2024, month, 1))
     assert len(provider._dividends) == 2
+
+
+def test_concurrent_cache_writes_are_safe() -> None:
+    provider = YahooFinanceProvider()
+    ticker = FakeTicker(dividends={datetime(2025, 1, 1, tzinfo=UTC): 1.0})
+
+    def load(index: int) -> None:
+        provider.quote(f"S{index}.sa")
+        provider.dividends(f"S{index}.sa", date(2024, 1, 1))
+
+    with patch("app.services.provider.yf.Ticker", return_value=ticker):
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            list(pool.map(load, range(50)))
+    assert len(provider._quotes) <= YahooFinanceProvider.MAX_CACHE_ENTRIES
+    assert len(provider._dividends) <= YahooFinanceProvider.MAX_CACHE_ENTRIES
 
 
 def test_expired_cache_entries_are_removed() -> None:
