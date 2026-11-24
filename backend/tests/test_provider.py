@@ -161,6 +161,25 @@ def test_dividend_cache_is_bounded() -> None:
     assert len(provider._dividends) == 2
 
 
+def test_replacing_a_key_does_not_over_evict() -> None:
+    provider = YahooFinanceProvider()
+    with patch("app.services.provider.yf.Ticker", return_value=FakeTicker()):
+        provider.quote("A.sa")
+        provider.quote("B.sa")
+    with (
+        patch.object(YahooFinanceProvider, "MAX_CACHE_ENTRIES", 2),
+        patch(
+            "app.services.provider.yf.Ticker",
+            side_effect=[FakeTicker(), FakeTicker()],
+        ),
+    ):
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            list(pool.map(lambda _: provider.quote("C.sa"), range(2)))
+    assert len(provider._quotes) == 2
+    assert "C.sa" in provider._quotes
+    assert {"A.sa", "B.sa"} & set(provider._quotes)
+
+
 def test_concurrent_cache_writes_are_safe() -> None:
     provider = YahooFinanceProvider()
     ticker = FakeTicker(dividends={datetime(2025, 1, 1, tzinfo=UTC): 1.0})
