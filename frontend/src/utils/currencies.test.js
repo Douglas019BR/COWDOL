@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCurrencyResponse } from './currencies';
+import { formatBid, parseCurrencyResponse } from './currencies';
 
 describe('parseCurrencyResponse', () => {
   it('returns only valid quotes', () => {
@@ -17,5 +17,22 @@ describe('parseCurrencyResponse', () => {
   it('handles missing or empty responses', () => {
     expect(parseCurrencyResponse(null)).toEqual([]);
     expect(parseCurrencyResponse({})).toEqual([]);
+  });
+
+  it('rejects null and blank bids', () => {
+    expect(
+      parseCurrencyResponse({
+        USDBRL: { bid: null, pctChange: '1' },
+        EURBRL: { bid: '   ', pctChange: '1' },
+        GBPBRL: { bid: '5.00', pctChange: '0' },
+      }),
+    ).toEqual([{ code: 'GBP', bid: 5, variation: 0 }]);
+  });
+});
+
+describe('formatBid', () => {
+  it('keeps precision for sub-cent quotes', () => {
+    expect(formatBid(0.0035)).toBe('0.0035');
+    expect(formatBid(5.1234)).toBe('5.12');
   });
 });

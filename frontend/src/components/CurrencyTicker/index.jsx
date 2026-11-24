@@ -1,26 +1,35 @@
 import { Box, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CURRENCY_URL, parseCurrencyResponse } from '../../utils/currencies';
+import {
+  CURRENCY_URL,
+  formatBid,
+  parseCurrencyResponse,
+} from '../../utils/currencies';
 
 const REFRESH_MS = 30 * 60 * 1000;
 
 export default function CurrencyTicker() {
   const { t } = useTranslation();
   const [quotes, setQuotes] = useState([]);
+  const requestId = useRef(0);
 
   useEffect(() => {
     const controller = new AbortController();
 
     async function load() {
+      const currentRequest = ++requestId.current;
       try {
         const response = await fetch(CURRENCY_URL, {
           signal: controller.signal,
         });
-        if (!response.ok) return;
-        setQuotes(parseCurrencyResponse(await response.json()));
+        if (!response.ok || currentRequest !== requestId.current) return;
+        const parsed = parseCurrencyResponse(await response.json());
+        if (currentRequest === requestId.current) setQuotes(parsed);
       } catch (error) {
-        if (error.name !== 'AbortError') setQuotes([]);
+        if (error.name !== 'AbortError' && currentRequest === requestId.current) {
+          setQuotes([]);
+        }
       }
     }
 
@@ -53,7 +62,7 @@ export default function CurrencyTicker() {
             {quote.code}/BRL
           </Typography>{' '}
           <Typography variant="body2" component="span">
-            {quote.bid.toFixed(2)}
+            {formatBid(quote.bid)}
           </Typography>{' '}
           <Typography
             variant="caption"
