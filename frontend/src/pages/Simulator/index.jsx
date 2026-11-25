@@ -1,6 +1,11 @@
 import {
+  Alert,
   Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -15,6 +20,7 @@ import { formatCurrency } from '../../utils/portfolio';
 import {
   simulateCompoundInterest,
   summariseSimulation,
+  validateSimulation,
 } from '../../utils/simulation';
 
 export default function Simulator() {
@@ -22,14 +28,21 @@ export default function Simulator() {
   const [form, setForm] = useState({
     initial: 1000,
     monthlyContribution: 100,
-    annualRate: 10,
+    rate: 10,
+    ratePeriod: 'annual',
     months: 12,
+    interestType: 'compound',
   });
 
-  const rows = useMemo(() => simulateCompoundInterest(form), [form]);
+  const validationError = validateSimulation(form);
+  const rows = useMemo(
+    () =>
+      validationError ? [] : simulateCompoundInterest(form),
+    [form, validationError],
+  );
   const summary = summariseSimulation(form, rows);
 
-  function update(field) {
+  function updateNumber(field) {
     return (event) =>
       setForm((current) => ({
         ...current,
@@ -53,7 +66,7 @@ export default function Simulator() {
           {[
             ['initial', 'simulator.initial'],
             ['monthlyContribution', 'simulator.monthly'],
-            ['annualRate', 'simulator.rate'],
+            ['rate', 'simulator.rate'],
             ['months', 'simulator.months'],
           ].map(([field, label]) => (
             <TextField
@@ -61,43 +74,90 @@ export default function Simulator() {
               label={t(label)}
               type="number"
               value={form[field]}
-              onChange={update(field)}
+              onChange={updateNumber(field)}
               inputProps={{ min: 0 }}
             />
           ))}
+          <FormControl>
+            <InputLabel>{t('simulator.ratePeriod')}</InputLabel>
+            <Select
+              value={form.ratePeriod}
+              label={t('simulator.ratePeriod')}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  ratePeriod: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value="annual">{t('simulator.annual')}</MenuItem>
+              <MenuItem value="monthly">{t('simulator.monthlyRate')}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel>{t('simulator.interestType')}</InputLabel>
+            <Select
+              value={form.interestType}
+              label={t('simulator.interestType')}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  interestType: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value="compound">
+                {t('simulator.compound')}
+              </MenuItem>
+              <MenuItem value="simple">{t('simulator.simple')}</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
-        <Typography sx={{ mt: 2 }}>
-          {t('simulator.contributed')}:{' '}
-          {formatCurrency(summary.totalContributed)}
-        </Typography>
-        <Typography>
-          {t('simulator.finalValue')}: {formatCurrency(summary.finalValue)}
-        </Typography>
-        <Typography>
-          {t('simulator.earnings')}: {formatCurrency(summary.earnings)}
-        </Typography>
+
+        {validationError && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {t(`simulator.${validationError}`)}
+          </Alert>
+        )}
+
+        {!validationError && (
+          <>
+            <Typography sx={{ mt: 2 }}>
+              {t('simulator.contributed')}:{' '}
+              {formatCurrency(summary.totalContributed)}
+            </Typography>
+            <Typography>
+              {t('simulator.finalValue')}: {formatCurrency(summary.finalValue)}
+            </Typography>
+            <Typography>
+              {t('simulator.earnings')}: {formatCurrency(summary.earnings)}
+            </Typography>
+          </>
+        )}
       </Paper>
 
-      <Paper sx={{ p: 3, overflowX: 'auto' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('simulator.month')}</TableCell>
-              <TableCell align="right">{t('simulator.balance')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.month}>
-                <TableCell>{row.month}</TableCell>
-                <TableCell align="right">
-                  {formatCurrency(row.balance)}
-                </TableCell>
+      {!validationError && (
+        <Paper sx={{ p: 3, overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('simulator.month')}</TableCell>
+                <TableCell align="right">{t('simulator.balance')}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.month}>
+                  <TableCell>{row.month}</TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(row.balance)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      )}
     </Box>
   );
 }
