@@ -5,3 +5,9 @@ export function flattenKeys(object, prefix = '') {
     return [path];
   });
 }
+
+export function findTranslationKeys(source) {
+  return [...source.matchAll(/\bt\(\s*(['"])([^'"]+)\1\s*\)/g)].map(
+    (match) => match[2],
+  );
+}

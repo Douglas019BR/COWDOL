@@ -33,13 +33,23 @@
     "title": "Compound interest simulator",
     "initial": "Initial amount (R$)",
     "monthly": "Monthly contribution (R$)",
-    "rate": "Annual rate (%)",
+    "rate": "Rate (%)",
+    "ratePeriod": "Rate period",
+    "annual": "Annual",
+    "monthlyRate": "Monthly",
+    "interestType": "Interest type",
+    "compound": "Compound",
+    "simple": "Simple",
     "months": "Months",
     "month": "Month",
     "balance": "Balance",
     "contributed": "Total contributed",
     "finalValue": "Final value",
-    "earnings": "Interest earned"
+    "earnings": "Interest earned",
+    "invalidMonths": "Months must be a non-negative whole number.",
+    "monthsTooLarge": "The term cannot exceed 600 months.",
+    "invalidRate": "The rate cannot be negative.",
+    "invalidAmount": "Amounts cannot be negative."
   },
   "ranking": {
     "best": "Top 5 best investments",
@@ -74,7 +84,8 @@
     "invalidDate": "Date must use DD/MM/YYYY.",
     "parseError": "Parse error: {{message}}",
     "invalidFileType": "Please select a .csv file.",
-    "fileTooLarge": "The file must be smaller than 1 MB."
+    "fileTooLarge": "The file must be smaller than 1 MB.",
+    "fileReadFailed": "The file could not be read. Please try again."
   },
   "footer": {
     "copyright": "© {{year}} COWDOL. All rights reserved."
