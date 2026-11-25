@@ -1,6 +1,12 @@
 """API-level tests for the COWDOL service."""
 
+from datetime import UTC, datetime
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
+
+from app.main import app
+from tests.test_provider import FakeTicker
 
 
 def test_health_endpoint(client: TestClient) -> None:
@@ -44,6 +50,28 @@ def test_profit_calculate_accepts_iso_dates(client: TestClient) -> None:
     response = client.post("/profit-calculate", json=payload)
     assert response.status_code == 200
     assert response.json()["holdings"][0]["symbol"] == "TEST3.sa"
+
+
+def test_repeated_requests_share_provider_cache() -> None:
+    payload = {
+        "data": [
+            {
+                "SYMBOL": "TEST3.sa",
+                "AMOUNT": 10,
+                "PURCHASE_DATE": "01/01/2024",
+                "PURCHASE_VALUE": 10.0,
+            }
+        ]
+    }
+    ticker = FakeTicker(
+        price=10.0,
+        dividends={datetime(2024, 2, 1, tzinfo=UTC): 1.0},
+    )
+    with patch("app.services.provider.yf.Ticker", return_value=ticker) as mock:
+        with TestClient(app) as live_client:
+            live_client.post("/profit-calculate", json=payload)
+            live_client.post("/profit-calculate", json=payload)
+    assert mock.call_count == 2
 
 
 def test_profit_calculate_rejects_invalid_holdings(
