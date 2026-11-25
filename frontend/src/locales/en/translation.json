@@ -1,0 +1,43 @@
+{
+  "appName": "COWDOL",
+  "tagline": "Investment management platform",
+  "home": {
+    "title": "Your investments, clearly",
+    "description": "Upload your portfolio CSV to analyse prices, dividends and profit and loss.",
+    "openPortfolio": "Open portfolio"
+  },
+  "language": {
+    "label": "Language",
+    "en": "EN",
+    "pt": "PT"
+  },
+  "portfolio": {
+    "title": "Portfolio analysis",
+    "upload": "Upload CSV",
+    "uploadHint": "Comma or semicolon separated, maximum 1 MB",
+    "preview": "Parsed holdings ({{count}})"
+  },
+  "table": {
+    "symbol": "Symbol",
+    "quantity": "Quantity",
+    "purchaseDate": "Purchase date",
+    "purchasePrice": "Purchase price (R$)"
+  },
+  "errors": {
+    "validationTitle": "The file contains errors",
+    "row": "Row",
+    "emptyFile": "The file is empty.",
+    "missingHeaders": "Missing columns: {{headers}}.",
+    "invalidSymbol": "Invalid symbol.",
+    "invalidAmount": "Amount must be a positive integer.",
+    "invalidPurchaseValue": "Purchase value must be positive.",
+    "invalidDate": "Date must use DD/MM/YYYY.",
+    "parseError": "Parse error: {{message}}",
+    "invalidFileType": "Please select a .csv file.",
+    "fileTooLarge": "The file must be smaller than 1 MB.",
+    "fileReadFailed": "The file could not be read. Please try again."
+  },
+  "footer": {
+    "copyright": "© {{year}} COWDOL. All rights reserved."
+  }
+}
