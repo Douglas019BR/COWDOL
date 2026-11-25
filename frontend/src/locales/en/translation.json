@@ -1,0 +1,93 @@
+{
+  "appName": "COWDOL",
+  "tagline": "Investment management platform",
+  "home": {
+    "title": "Your investments, clearly",
+    "description": "Upload your portfolio CSV to analyse prices, dividends and profit and loss.",
+    "openPortfolio": "Open portfolio",
+    "openSimulator": "Compound interest simulator"
+  },
+  "language": {
+    "label": "Language",
+    "en": "EN",
+    "pt": "PT"
+  },
+  "portfolio": {
+    "title": "Portfolio analysis",
+    "upload": "Upload CSV",
+    "uploadHint": "Comma or semicolon separated, maximum 1 MB",
+    "preview": "Parsed holdings ({{count}})",
+    "analyse": "Analyse portfolio",
+    "analysing": "Fetching market data..."
+  },
+  "currency": {
+    "label": "Currency rates against BRL"
+  },
+  "recommendations": {
+    "title": "Fund recommendations",
+    "strong": "Strong",
+    "review": "Review",
+    "disclaimer": "Heuristic based on return and dividend yield. Not financial advice."
+  },
+  "simulator": {
+    "title": "Compound interest simulator",
+    "initial": "Initial amount (R$)",
+    "monthly": "Monthly contribution (R$)",
+    "rate": "Rate (%)",
+    "ratePeriod": "Rate period",
+    "annual": "Annual",
+    "monthlyRate": "Monthly",
+    "interestType": "Interest type",
+    "compound": "Compound",
+    "simple": "Simple",
+    "months": "Months",
+    "month": "Month",
+    "balance": "Balance",
+    "contributed": "Total contributed",
+    "finalValue": "Final value",
+    "earnings": "Interest earned",
+    "invalidMonths": "Months must be a non-negative whole number.",
+    "monthsTooLarge": "The term cannot exceed 600 months.",
+    "invalidRate": "The rate cannot be negative.",
+    "invalidAmount": "Amounts cannot be negative."
+  },
+  "ranking": {
+    "best": "Top 5 best investments",
+    "worst": "Top 5 worst investments"
+  },
+  "totals": {
+    "invested": "Total invested",
+    "current": "Current value",
+    "dividends": "Dividends received",
+    "profitLoss": "Total profit/loss"
+  },
+  "table": {
+    "symbol": "Symbol",
+    "quantity": "Quantity",
+    "purchaseDate": "Purchase date",
+    "purchasePrice": "Purchase price (R$)",
+    "purchaseTotal": "Invested (R$)",
+    "currentValue": "Current value (R$)",
+    "dividends": "Dividends (R$)",
+    "difference": "Difference (R$)",
+    "balance": "Balance (R$)"
+  },
+  "errors": {
+    "validationTitle": "The file contains errors",
+    "processingTitle": "Some assets could not be processed",
+    "row": "Row",
+    "emptyFile": "The file is empty.",
+    "missingHeaders": "Missing columns: {{headers}}.",
+    "invalidSymbol": "Invalid symbol.",
+    "invalidAmount": "Amount must be a positive integer.",
+    "invalidPurchaseValue": "Purchase value must be positive.",
+    "invalidDate": "Date must use DD/MM/YYYY.",
+    "parseError": "Parse error: {{message}}",
+    "invalidFileType": "Please select a .csv file.",
+    "fileTooLarge": "The file must be smaller than 1 MB.",
+    "fileReadFailed": "The file could not be read. Please try again."
+  },
+  "footer": {
+    "copyright": "© {{year}} COWDOL. All rights reserved."
+  }
+}
