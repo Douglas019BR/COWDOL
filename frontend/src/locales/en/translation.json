@@ -20,6 +20,9 @@
     "analyse": "Analyse portfolio",
     "analysing": "Fetching market data..."
   },
+  "currency": {
+    "label": "Currency rates against BRL"
+  },
   "recommendations": {
     "title": "Fund recommendations",
     "strong": "Strong",
