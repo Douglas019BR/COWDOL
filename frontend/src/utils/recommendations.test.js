@@ -34,6 +34,19 @@ describe('recommendFunds', () => {
     expect(result[2].reason).toBe('review');
   });
 
+  it('aggregates repeated symbols before applying the limit', () => {
+    const holdings = [
+      fund('A', 100, 50),
+      fund('A', 100, 50),
+      fund('A', 100, 50),
+      fund('B', 100, 10),
+      fund('C', 100, -10),
+    ];
+    const result = recommendFunds(holdings, 3);
+    expect(result.map((item) => item.symbol)).toEqual(['A', 'B', 'C']);
+    expect(result[0].score).toBeCloseTo(0.08);
+  });
+
   it('returns an empty list when no holdings are provided', () => {
     expect(recommendFunds([])).toEqual([]);
   });

@@ -65,6 +65,19 @@ describe('parsePortfolioCsv', () => {
     ]);
   });
 
+  it('excludes malformed rows and reports their real row number', () => {
+    const csv = [
+      'SYMBOL,AMOUNT,PURCHASE_DATE,PURCHASE_VALUE',
+      'BBSE3.sa,11,01/10/2023,31,46',
+      'PETR4.sa,10,01/04/2024,37.58',
+      '',
+    ].join('\n');
+    const { holdings, errors } = parsePortfolioCsv(csv);
+    expect(holdings.map((holding) => holding.symbol)).toEqual(['PETR4.sa']);
+    expect(errors[0].messages).toContain('parseError');
+    expect(errors[0].row).toBe(2);
+  });
+
   it('reports empty files', () => {
     const { holdings, errors } = parsePortfolioCsv('   ');
     expect(holdings).toEqual([]);

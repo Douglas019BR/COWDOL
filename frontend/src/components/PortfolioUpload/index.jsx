@@ -14,18 +14,22 @@ export default function PortfolioUpload({ onParsed }) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') {
-      setFileError('invalidFileType');
-      return;
+    try {
+      if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') {
+        setFileError('invalidFileType');
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError('fileTooLarge');
+        return;
+      }
+      setFileError(null);
+      onParsed(parsePortfolioCsv(await file.text()));
+    } catch {
+      setFileError('fileReadFailed');
+    } finally {
+      event.target.value = '';
     }
-    if (file.size > MAX_FILE_BYTES) {
-      setFileError('fileTooLarge');
-      return;
-    }
-
-    setFileError(null);
-    onParsed(parsePortfolioCsv(await file.text()));
-    event.target.value = '';
   }
 
   return (

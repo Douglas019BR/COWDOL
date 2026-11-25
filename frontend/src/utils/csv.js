@@ -57,8 +57,14 @@ export function parsePortfolioCsv(text) {
 
   const holdings = [];
   const errors = [];
+  const parserErrorRows = new Set(
+    result.errors
+      .filter((error) => typeof error.row === 'number')
+      .map((error) => error.row + 2),
+  );
 
   result.data.forEach((row, index) => {
+    if (parserErrorRows.has(index + 2)) return;
     const normalized = {};
     Object.entries(row).forEach(([key, value]) => {
       normalized[normalizeHeader(key)] = value;
@@ -92,7 +98,7 @@ export function parsePortfolioCsv(text) {
 
   result.errors.forEach((error) => {
     errors.push({
-      row: (error.row ?? 0) + 1,
+      row: typeof error.row === 'number' ? error.row + 2 : 0,
       messages: ['parseError'],
       params: { message: error.message },
     });

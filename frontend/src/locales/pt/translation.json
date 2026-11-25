@@ -30,13 +30,23 @@
     "title": "Simulador de juros compostos",
     "initial": "Valor inicial (R$)",
     "monthly": "Aporte mensal (R$)",
-    "rate": "Taxa anual (%)",
+    "rate": "Taxa (%)",
+    "ratePeriod": "Período da taxa",
+    "annual": "Anual",
+    "monthlyRate": "Mensal",
+    "interestType": "Tipo de juros",
+    "compound": "Compostos",
+    "simple": "Simples",
     "months": "Meses",
     "month": "Mês",
     "balance": "Saldo",
     "contributed": "Total aportado",
     "finalValue": "Valor final",
-    "earnings": "Juros ganhos"
+    "earnings": "Juros ganhos",
+    "invalidMonths": "Os meses devem ser um número inteiro não negativo.",
+    "monthsTooLarge": "O prazo não pode exceder 600 meses.",
+    "invalidRate": "A taxa não pode ser negativa.",
+    "invalidAmount": "Os valores não podem ser negativos."
   },
   "ranking": {
     "best": "5 melhores investimentos",
@@ -71,7 +81,8 @@
     "invalidDate": "A data deve usar DD/MM/AAAA.",
     "parseError": "Erro de leitura: {{message}}",
     "invalidFileType": "Selecione um arquivo .csv.",
-    "fileTooLarge": "O arquivo deve ter menos de 1 MB."
+    "fileTooLarge": "O arquivo deve ter menos de 1 MB.",
+    "fileReadFailed": "Não foi possível ler o arquivo. Tente novamente."
   },
   "footer": {
     "copyright": "© {{year}} COWDOL. Todos os direitos reservados."
