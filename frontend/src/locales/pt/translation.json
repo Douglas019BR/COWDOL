@@ -15,16 +15,30 @@
     "title": "Análise da carteira",
     "upload": "Enviar CSV",
     "uploadHint": "Separado por vírgula ou ponto e vírgula, máximo 1 MB",
-    "preview": "Ativos lidos ({{count}})"
+    "preview": "Ativos lidos ({{count}})",
+    "analyse": "Analisar carteira",
+    "analysing": "Buscando dados de mercado..."
+  },
+  "totals": {
+    "invested": "Total investido",
+    "current": "Valor atual",
+    "dividends": "Dividendos recebidos",
+    "profitLoss": "Lucro/prejuízo total"
   },
   "table": {
     "symbol": "Ativo",
     "quantity": "Quantidade",
     "purchaseDate": "Data da compra",
-    "purchasePrice": "Preço de compra (R$)"
+    "purchasePrice": "Preço de compra (R$)",
+    "purchaseTotal": "Investido (R$)",
+    "currentValue": "Valor atual (R$)",
+    "dividends": "Dividendos (R$)",
+    "difference": "Diferença (R$)",
+    "balance": "Saldo (R$)"
   },
   "errors": {
     "validationTitle": "O arquivo contém erros",
+    "processingTitle": "Alguns ativos não puderam ser processados",
     "row": "Linha",
     "emptyFile": "O arquivo está vazio.",
     "missingHeaders": "Colunas ausentes: {{headers}}.",
