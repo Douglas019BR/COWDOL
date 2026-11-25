@@ -4,7 +4,8 @@
   "home": {
     "title": "Seus investimentos, com clareza",
     "description": "Envie o CSV da sua carteira para analisar preços, dividendos e lucro ou prejuízo.",
-    "openPortfolio": "Abrir carteira"
+    "openPortfolio": "Abrir carteira",
+    "openSimulator": "Simulador de juros compostos"
   },
   "language": {
     "label": "Idioma",
@@ -18,6 +19,32 @@
     "preview": "Ativos lidos ({{count}})",
     "analyse": "Analisar carteira",
     "analysing": "Buscando dados de mercado..."
+  },
+  "simulator": {
+    "title": "Simulador de juros compostos",
+    "initial": "Valor inicial (R$)",
+    "monthly": "Aporte mensal (R$)",
+    "rate": "Taxa (%)",
+    "ratePeriod": "Período da taxa",
+    "annual": "Anual",
+    "monthlyRate": "Mensal",
+    "interestType": "Tipo de juros",
+    "compound": "Compostos",
+    "simple": "Simples",
+    "months": "Meses",
+    "month": "Mês",
+    "balance": "Saldo",
+    "contributed": "Total aportado",
+    "finalValue": "Valor final",
+    "earnings": "Juros ganhos",
+    "invalidMonths": "Os meses devem ser um número inteiro não negativo.",
+    "monthsTooLarge": "O prazo não pode exceder 600 meses.",
+    "invalidRate": "A taxa não pode ser negativa.",
+    "invalidAmount": "Os valores não podem ser negativos."
+  },
+  "ranking": {
+    "best": "5 melhores investimentos",
+    "worst": "5 piores investimentos"
   },
   "totals": {
     "invested": "Total investido",

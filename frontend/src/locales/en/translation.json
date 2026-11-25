@@ -4,7 +4,8 @@
   "home": {
     "title": "Your investments, clearly",
     "description": "Upload your portfolio CSV to analyse prices, dividends and profit and loss.",
-    "openPortfolio": "Open portfolio"
+    "openPortfolio": "Open portfolio",
+    "openSimulator": "Compound interest simulator"
   },
   "language": {
     "label": "Language",
@@ -18,6 +19,32 @@
     "preview": "Parsed holdings ({{count}})",
     "analyse": "Analyse portfolio",
     "analysing": "Fetching market data..."
+  },
+  "simulator": {
+    "title": "Compound interest simulator",
+    "initial": "Initial amount (R$)",
+    "monthly": "Monthly contribution (R$)",
+    "rate": "Rate (%)",
+    "ratePeriod": "Rate period",
+    "annual": "Annual",
+    "monthlyRate": "Monthly",
+    "interestType": "Interest type",
+    "compound": "Compound",
+    "simple": "Simple",
+    "months": "Months",
+    "month": "Month",
+    "balance": "Balance",
+    "contributed": "Total contributed",
+    "finalValue": "Final value",
+    "earnings": "Interest earned",
+    "invalidMonths": "Months must be a non-negative whole number.",
+    "monthsTooLarge": "The term cannot exceed 600 months.",
+    "invalidRate": "The rate cannot be negative.",
+    "invalidAmount": "Amounts cannot be negative."
+  },
+  "ranking": {
+    "best": "Top 5 best investments",
+    "worst": "Top 5 worst investments"
   },
   "totals": {
     "invested": "Total invested",
