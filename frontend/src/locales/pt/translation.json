@@ -3,12 +3,39 @@
   "tagline": "Plataforma de gestão de investimentos",
   "home": {
     "title": "Seus investimentos, com clareza",
-    "description": "Envie o CSV da sua carteira para analisar preços, dividendos e lucro ou prejuízo."
+    "description": "Envie o CSV da sua carteira para analisar preços, dividendos e lucro ou prejuízo.",
+    "openPortfolio": "Abrir carteira"
   },
   "language": {
     "label": "Idioma",
     "en": "EN",
     "pt": "PT"
+  },
+  "portfolio": {
+    "title": "Análise da carteira",
+    "upload": "Enviar CSV",
+    "uploadHint": "Separado por vírgula ou ponto e vírgula, máximo 1 MB",
+    "preview": "Ativos lidos ({{count}})"
+  },
+  "table": {
+    "symbol": "Ativo",
+    "quantity": "Quantidade",
+    "purchaseDate": "Data da compra",
+    "purchasePrice": "Preço de compra (R$)"
+  },
+  "errors": {
+    "validationTitle": "O arquivo contém erros",
+    "row": "Linha",
+    "emptyFile": "O arquivo está vazio.",
+    "missingHeaders": "Colunas ausentes: {{headers}}.",
+    "invalidSymbol": "Ativo inválido.",
+    "invalidAmount": "A quantidade deve ser um inteiro positivo.",
+    "invalidPurchaseValue": "O valor de compra deve ser positivo.",
+    "invalidDate": "A data deve usar DD/MM/AAAA.",
+    "parseError": "Erro de leitura: {{message}}",
+    "invalidFileType": "Selecione um arquivo .csv.",
+    "fileTooLarge": "O arquivo deve ter menos de 1 MB.",
+    "fileReadFailed": "Não foi possível ler o arquivo. Tente novamente."
   },
   "footer": {
     "copyright": "© {{year}} COWDOL. Todos os direitos reservados."
