@@ -12,7 +12,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
@@ -42,18 +42,33 @@ export default function Portfolio() {
   const [holdings, setHoldings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const requestId = useRef(0);
+
+  function handleParsed(result) {
+    requestId.current += 1;
+    setParsed(result);
+    setHoldings([]);
+    setApiError(null);
+  }
 
   async function handleAnalyse() {
+    const currentRequest = ++requestId.current;
     setLoading(true);
     setApiError(null);
     setHoldings([]);
     try {
       const response = await calculateProfit(parsed.holdings);
-      setHoldings(response.holdings ?? []);
+      if (currentRequest === requestId.current) {
+        setHoldings(response.holdings ?? []);
+      }
     } catch (error) {
-      setApiError(error.message);
+      if (currentRequest === requestId.current) {
+        setApiError(error.message);
+      }
     } finally {
-      setLoading(false);
+      if (currentRequest === requestId.current) {
+        setLoading(false);
+      }
     }
   }
 
@@ -67,7 +82,7 @@ export default function Portfolio() {
         <Typography variant="h4" component="h2" gutterBottom>
           {t('portfolio.title')}
         </Typography>
-        <PortfolioUpload onParsed={setParsed} />
+        <PortfolioUpload onParsed={handleParsed} />
         {parsed?.holdings?.length > 0 && (
           <Button
             variant="contained"

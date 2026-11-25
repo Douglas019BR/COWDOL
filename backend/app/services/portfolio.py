@@ -1,0 +1,50 @@
+"""Portfolio calculation logic."""
+
+from app.models import HoldingInput, HoldingResult
+from app.services.provider import MarketDataError, MarketDataProvider
+
+
+def calculate_holding(
+    holding: HoldingInput, provider: MarketDataProvider
+) -> HoldingResult:
+    """Calculate profit, dividends and balance for a single holding."""
+    quote = provider.quote(holding.symbol)
+    dividends = provider.dividends(holding.symbol, holding.purchase_date)
+    total_dividends = sum(item.amount for item in dividends) * holding.amount
+    current_value = quote.price * holding.amount
+    purchase_total = holding.purchase_value * holding.amount
+    value_difference = current_value - purchase_total
+    return HoldingResult(
+        symbol=holding.symbol,
+        amount=holding.amount,
+        purchase_total=round(purchase_total, 2),
+        current_value=round(current_value, 2),
+        value_difference=round(value_difference, 2),
+        total_dividends=round(total_dividends, 2),
+        balance=round(value_difference + total_dividends, 2),
+        currency=quote.currency,
+    )
+
+
+def calculate_portfolio(
+    holdings: list[HoldingInput], provider: MarketDataProvider
+) -> list[HoldingResult]:
+    """Calculate every holding, reporting provider errors per holding."""
+    results: list[HoldingResult] = []
+    for holding in holdings:
+        try:
+            results.append(calculate_holding(holding, provider))
+        except MarketDataError as exc:
+            results.append(
+                HoldingResult(
+                    symbol=holding.symbol,
+                    amount=holding.amount,
+                    purchase_total=0.0,
+                    current_value=0.0,
+                    value_difference=0.0,
+                    total_dividends=0.0,
+                    balance=0.0,
+                    error=str(exc),
+                )
+            )
+    return results
