@@ -16,6 +16,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
+import RecommendationSection from '../../components/RecommendationSection';
 import { calculateProfit } from '../../services/api';
 import {
   calculateTotals,
@@ -188,6 +189,7 @@ export default function Portfolio() {
           </Paper>
 
           <RankingSection holdings={successful} />
+          <RecommendationSection holdings={successful} />
         </>
       )}
     </Box>
