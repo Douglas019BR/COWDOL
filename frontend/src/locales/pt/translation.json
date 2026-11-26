@@ -25,6 +25,7 @@
   },
   "sectors": {
     "title": "Alocação por setor",
+    "partial": "Parcial: inclui ativos que não puderam ser analisados.",
     "count": "{{count}} ativo(s)",
     "balance": "Saldo",
     "financial": "Financeiro",

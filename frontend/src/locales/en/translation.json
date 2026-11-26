@@ -25,6 +25,7 @@
   },
   "sectors": {
     "title": "Allocation by sector",
+    "partial": "Partial: includes assets that could not be analysed.",
     "count": "{{count}} asset(s)",
     "balance": "Balance",
     "financial": "Financial",

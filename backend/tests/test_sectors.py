@@ -15,6 +15,8 @@ def test_normalize_symbol_strips_exchange_suffix() -> None:
 def test_static_map_covers_known_b3_tickers() -> None:
     assert sector_from_static_map("PETR4.sa") == "energy"
     assert sector_from_static_map("TAEE11.sa") == "utilities"
+    assert sector_from_static_map("ISAE4.sa") == "utilities"
+    assert sector_from_static_map("ECOR3.sa") == "industrials"
     assert sector_from_static_map("UNKNOWN.sa") is None
 
 

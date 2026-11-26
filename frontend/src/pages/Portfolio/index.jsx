@@ -189,7 +189,7 @@ export default function Portfolio() {
             </Table>
           </Paper>
 
-          <SectorAllocation holdings={successful} />
+          <SectorAllocation holdings={holdings} partial={failed.length > 0} />
           <RankingSection holdings={successful} />
           <RecommendationSection holdings={successful} />
         </>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/portfolio';
 import { groupBySector } from '../../utils/sectors';
 
-export default function SectorAllocation({ holdings }) {
+export default function SectorAllocation({ holdings, partial = false }) {
   const { t } = useTranslation();
   const groups = groupBySector(holdings);
 
@@ -14,6 +14,11 @@ export default function SectorAllocation({ holdings }) {
       <Typography variant="h6" gutterBottom>
         {t('sectors.title')}
       </Typography>
+      {partial && (
+        <Typography variant="caption" color="text.secondary">
+          {t('sectors.partial')}
+        </Typography>
+      )}
       <Box
         sx={{
           display: 'grid',

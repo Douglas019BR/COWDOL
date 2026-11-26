@@ -15,7 +15,10 @@ def calculate_holding(
     current_value = quote.price * holding.amount
     purchase_total = holding.purchase_value * holding.amount
     value_difference = current_value - purchase_total
-    sector = canonical_sector(holding.sector or provider.sector(holding.symbol))
+    try:
+        sector = canonical_sector(holding.sector or provider.sector(holding.symbol))
+    except MarketDataError:
+        sector = "other"
     return HoldingResult(
         symbol=holding.symbol,
         amount=holding.amount,
@@ -42,7 +45,7 @@ def calculate_portfolio(
                 HoldingResult(
                     symbol=holding.symbol,
                     amount=holding.amount,
-                    purchase_total=0.0,
+                    purchase_total=round(holding.purchase_value * holding.amount, 2),
                     current_value=0.0,
                     value_difference=0.0,
                     total_dividends=0.0,

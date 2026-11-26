@@ -18,7 +18,7 @@ SECTOR_KEYS = frozenset(
 
 STATIC_SECTORS = {
     "BBSE3": "financial",
-    "ISAE4": "financial",
+    "ISAE4": "utilities",
     "ITUB4": "financial",
     "BBDC4": "financial",
     "B3SA3": "financial",
@@ -28,7 +28,7 @@ STATIC_SECTORS = {
     "VALE5": "materials",
     "GMAT3": "consumer",
     "TAEE11": "utilities",
-    "ECOR3": "utilities",
+    "ECOR3": "industrials",
     "CDII11": "real_estate",
     "PATL11": "real_estate",
     "TVRI11": "real_estate",
