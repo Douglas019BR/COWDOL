@@ -6,6 +6,7 @@ export default function CurrencyText({ value, currency = 'BRL' }) {
   return (
     <Typography
       component="span"
+      variant="inherit"
       data-negative={negative}
       sx={{ color: negative ? 'error.main' : undefined }}
     >
