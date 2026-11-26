@@ -17,7 +17,14 @@ PATTERNS = (
         "secret assignment",
         re.compile(
             r"(?i)(?:api[_-]?key|secret|password|token)"
-            r"[\"']?\s*[:=]\s*[\"']?([A-Za-z0-9_\-]{8,})"
+            r"[\"']?\s*[:=]\s*[\"']([^\"']{8,})[\"']"
+        ),
+    ),
+    (
+        "secret assignment",
+        re.compile(
+            r"(?i)(?:api[_-]?key|secret|password|token)"
+            r"\s*[:=]\s*([A-Za-z0-9_\-/+]{8,})"
         ),
     ),
 )

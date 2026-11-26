@@ -23,10 +23,13 @@ class SecretScanTests(unittest.TestCase):
 
     def test_detects_assignment_forms(self) -> None:
         value = "abcd" + "12345678"
+        punctuated = "P@ss" + "w0rd!"
+        json_line = '{"password":"' + punctuated + '"}'
         for line in (
             f'api_key = "{value}"',
             f"API_KEY={value}",
             f'{{"api_key": "{value}"}}',
+            json_line,
         ):
             with self.subTest(line=line):
                 findings = self.scan_text(line + "\n")
