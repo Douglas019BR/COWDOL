@@ -38,7 +38,22 @@ def test_calculate_holding_values_and_filters_old_dividends() -> None:
     assert result.total_dividends == 15.0
     assert result.balance == 35.0
     assert result.currency == "BRL"
+    assert result.sector == "energy"
     assert result.error is None
+
+
+def test_csv_sector_override_wins_over_provider() -> None:
+    holding = HoldingInput.model_validate(
+        {
+            "SYMBOL": "TEST3.sa",
+            "AMOUNT": 10,
+            "PURCHASE_DATE": "01/01/2024",
+            "PURCHASE_VALUE": 10.0,
+            "SECTOR": "Financial Services",
+        }
+    )
+    result = calculate_holding(holding, FakeProvider())
+    assert result.sector == "financial"
 
 
 def test_calculate_portfolio_reports_provider_errors_per_holding() -> None:

@@ -23,6 +23,22 @@
   "currency": {
     "label": "Cotações de moedas em relação ao BRL"
   },
+  "sectors": {
+    "title": "Alocação por setor",
+    "count": "{{count}} ativo(s)",
+    "balance": "Saldo",
+    "financial": "Financeiro",
+    "energy": "Energia",
+    "materials": "Materiais e mineração",
+    "health": "Saúde",
+    "utilities": "Utilidades",
+    "real_estate": "Fundos imobiliários",
+    "industrials": "Industrial",
+    "consumer": "Consumo",
+    "technology": "Tecnologia",
+    "communication": "Comunicação",
+    "other": "Outros"
+  },
   "recommendations": {
     "title": "Recomendações de fundos",
     "strong": "Positivo",

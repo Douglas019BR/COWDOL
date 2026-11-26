@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
+import SectorAllocation from '../../components/SectorAllocation';
 import { calculateProfit } from '../../services/api';
 import {
   calculateTotals,
@@ -188,6 +189,7 @@ export default function Portfolio() {
             </Table>
           </Paper>
 
+          <SectorAllocation holdings={successful} />
           <RankingSection holdings={successful} />
           <RecommendationSection holdings={successful} />
         </>

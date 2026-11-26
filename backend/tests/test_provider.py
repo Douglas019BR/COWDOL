@@ -49,11 +49,13 @@ class FakeTicker:
         currency: str | None = "BRL",
         dividends: dict[datetime, float] | None = None,
         empty_dividends: bool = False,
+        sector: str | None = None,
     ) -> None:
         self.price_history = FakePriceHistory(price)
         self.history_metadata = {"currency": currency}
         self.dividend_history = FakeDividendHistory(dividends or {})
         self.empty_dividends = empty_dividends
+        self.info = {"sector": sector}
 
     def history(
         self, period: str, actions: bool = False, auto_adjust: bool = True
@@ -193,6 +195,33 @@ def test_concurrent_cache_writes_are_safe() -> None:
             list(pool.map(load, range(50)))
     assert len(provider._quotes) <= YahooFinanceProvider.MAX_CACHE_ENTRIES
     assert len(provider._dividends) <= YahooFinanceProvider.MAX_CACHE_ENTRIES
+
+
+def test_sector_uses_static_map_without_a_network_call() -> None:
+    provider = YahooFinanceProvider()
+    with patch("app.services.provider.yf.Ticker") as ticker_mock:
+        assert provider.sector("BBSE3.sa") == "financial"
+    ticker_mock.assert_not_called()
+
+
+def test_sector_falls_back_to_yahoo_info_and_caches() -> None:
+    provider = YahooFinanceProvider()
+    ticker = FakeTicker(sector="Healthcare")
+    with patch("app.services.provider.yf.Ticker", return_value=ticker) as mock:
+        first = provider.sector("UNKNOWN.sa")
+        second = provider.sector("UNKNOWN.sa")
+    assert first == "health"
+    assert second == first
+    assert mock.call_count == 1
+
+
+def test_unknown_sector_maps_to_other() -> None:
+    provider = YahooFinanceProvider()
+    with patch(
+        "app.services.provider.yf.Ticker",
+        return_value=FakeTicker(sector=None),
+    ):
+        assert provider.sector("UNKNOWN.sa") == "other"
 
 
 def test_expired_cache_entries_are_removed() -> None:
