@@ -26,7 +26,14 @@ export default function RecommendationSection({ holdings }) {
           <ListItem key={item.symbol} divider>
             <ListItemText
               primary={item.symbol}
-              secondary={`${(item.score * 100).toFixed(2)}%`}
+              secondary={
+                <Typography
+                  component="span"
+                  color={item.score < 0 ? 'error.main' : 'text.secondary'}
+                >
+                  {(item.score * 100).toFixed(2)}%
+                </Typography>
+              }
             />
             <Chip
               size="small"

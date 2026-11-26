@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { formatCurrency } from '../../utils/portfolio';
+import CurrencyText from '../common/CurrencyText';
 import { holdingReturn, rankHoldings } from '../../utils/ranking';
 
 export default function RankingSection({ holdings }) {
@@ -33,10 +33,12 @@ export default function RankingSection({ holdings }) {
                 <ListItem key={`${holding.symbol}-${index}`} divider>
                   <ListItemText
                     primary={holding.symbol}
-                    secondary={formatCurrency(
-                      holding.balance,
-                      holding.currency,
-                    )}
+                    secondary={
+                      <CurrencyText
+                        value={holding.balance}
+                        currency={holding.currency}
+                      />
+                    }
                   />
                   <Typography
                     variant="body2"

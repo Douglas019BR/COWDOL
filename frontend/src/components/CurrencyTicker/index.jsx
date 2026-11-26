@@ -67,7 +67,7 @@ export default function CurrencyTicker() {
           <Typography
             variant="caption"
             component="span"
-            color={quote.variation >= 0 ? 'lime' : 'warning.main'}
+            color={quote.variation >= 0 ? 'lime' : 'error.main'}
           >
             {quote.variation.toFixed(2)}%
           </Typography>
