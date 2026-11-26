@@ -16,7 +16,8 @@ PATTERNS = (
     (
         "secret assignment",
         re.compile(
-            r"(?i)(secret|password|api[_-]?key|token)\s*[:=]\s*['\"][A-Za-z0-9_\-]{8,}['\"]"
+            r"(?i)(?:api[_-]?key|secret|password|token)"
+            r"[\"']?\s*[:=]\s*[\"']?([A-Za-z0-9_\-]{8,})"
         ),
     ),
 )
@@ -25,15 +26,15 @@ ALLOWED = re.compile(r"(?i)(example|placeholder|dummy|sample|your[_-]?|test)")
 
 
 def tracked_files() -> list[Path]:
-    """Return text files tracked by git."""
-    output = subprocess.check_output(
-        ["git", "ls-files"], cwd=ROOT, text=True
-    )
+    """Return text files tracked by git, including unusual filenames."""
+    output = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT)
     return [
-        ROOT / path
-        for path in output.splitlines()
+        ROOT / Path(path.decode("utf-8"))
+        for path in output.split(b"\0")
         if path
-        and not path.startswith(("frontend/package-lock.json", "frontend/node_modules"))
+        and not path.startswith(
+            (b"frontend/package-lock.json", b"frontend/node_modules")
+        )
     ]
 
 
@@ -48,10 +49,13 @@ def scan() -> list[str]:
         except (UnicodeDecodeError, OSError):
             continue
         for line_number, line in enumerate(text.splitlines(), start=1):
-            if ALLOWED.search(line):
-                continue
             for name, pattern in PATTERNS:
-                if pattern.search(line):
+                for match in pattern.finditer(line):
+                    candidate = (
+                        match.group(1) if match.groups() else match.group(0)
+                    )
+                    if ALLOWED.search(candidate):
+                        continue
                     relative = path.relative_to(ROOT)
                     findings.append(f"{relative}:{line_number}: {name}")
     return findings
