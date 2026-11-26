@@ -23,6 +23,23 @@
   "currency": {
     "label": "Currency rates against BRL"
   },
+  "sectors": {
+    "title": "Allocation by sector",
+    "partial": "Partial: includes assets that could not be analysed.",
+    "count": "{{count}} asset(s)",
+    "balance": "Balance",
+    "financial": "Financial",
+    "energy": "Energy",
+    "materials": "Materials & mining",
+    "health": "Health",
+    "utilities": "Utilities",
+    "real_estate": "Real estate funds",
+    "industrials": "Industrials",
+    "consumer": "Consumer",
+    "technology": "Technology",
+    "communication": "Communication",
+    "other": "Other"
+  },
   "recommendations": {
     "title": "Fund recommendations",
     "strong": "Strong",

@@ -36,6 +36,10 @@ class HoldingInput(BaseModel):
         gt=0,
         validation_alias=AliasChoices("purchase_value", "PURCHASE_VALUE"),
     )
+    sector: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("sector", "SECTOR"),
+    )
 
     @field_validator("purchase_date", mode="before")
     @classmethod
@@ -55,6 +59,7 @@ class HoldingResult(BaseModel):
     total_dividends: float
     balance: float
     currency: str = "BRL"
+    sector: str = "other"
     error: str | None = None
 
 

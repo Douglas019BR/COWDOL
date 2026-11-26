@@ -52,4 +52,29 @@ describe('Portfolio', () => {
     await waitFor(() => expect(resolvers).toHaveLength(1));
     expect(screen.queryByText('STALE')).not.toBeInTheDocument();
   });
+
+  it('shows allocation when every market-data lookup fails', async () => {
+    render(<Portfolio />);
+    fireEvent.click(screen.getByText('upload'));
+    fireEvent.click(screen.getByText(/Analyse|Analisar/));
+    resolvers.at(-1)({
+      holdings: [
+        {
+          symbol: 'FAIL',
+          amount: 1,
+          purchase_total: 100,
+          current_value: 0,
+          value_difference: 0,
+          total_dividends: 0,
+          balance: 0,
+          currency: 'BRL',
+          sector: 'energy',
+          error: 'lookup failed',
+        },
+      ],
+    });
+    await waitFor(() =>
+      expect(screen.getByText(/Allocation by sector/i)).toBeInTheDocument(),
+    );
+  });
 });

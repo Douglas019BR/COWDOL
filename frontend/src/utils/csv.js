@@ -93,6 +93,7 @@ export function parsePortfolioCsv(text) {
       amount,
       purchase_date: purchaseDate,
       purchase_value: purchaseValue,
+      ...(normalized.SECTOR ? { SECTOR: String(normalized.SECTOR).trim() } : {}),
     });
   });
 

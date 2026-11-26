@@ -71,7 +71,7 @@ def test_repeated_requests_share_provider_cache() -> None:
         with TestClient(app) as live_client:
             live_client.post("/profit-calculate", json=payload)
             live_client.post("/profit-calculate", json=payload)
-    assert mock.call_count == 2
+    assert mock.call_count == 3
 
 
 def test_profit_calculate_rejects_invalid_holdings(

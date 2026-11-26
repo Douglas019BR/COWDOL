@@ -2,6 +2,7 @@
 
 from app.models import HoldingInput, HoldingResult
 from app.services.provider import MarketDataError, MarketDataProvider
+from app.services.sectors import canonical_sector
 
 
 def calculate_holding(
@@ -14,6 +15,10 @@ def calculate_holding(
     current_value = quote.price * holding.amount
     purchase_total = holding.purchase_value * holding.amount
     value_difference = current_value - purchase_total
+    try:
+        sector = canonical_sector(holding.sector or provider.sector(holding.symbol))
+    except MarketDataError:
+        sector = "other"
     return HoldingResult(
         symbol=holding.symbol,
         amount=holding.amount,
@@ -23,6 +28,7 @@ def calculate_holding(
         total_dividends=round(total_dividends, 2),
         balance=round(value_difference + total_dividends, 2),
         currency=quote.currency,
+        sector=sector,
     )
 
 
@@ -39,11 +45,12 @@ def calculate_portfolio(
                 HoldingResult(
                     symbol=holding.symbol,
                     amount=holding.amount,
-                    purchase_total=0.0,
+                    purchase_total=round(holding.purchase_value * holding.amount, 2),
                     current_value=0.0,
                     value_difference=0.0,
                     total_dividends=0.0,
                     balance=0.0,
+                    sector=canonical_sector(holding.sector),
                     error=str(exc),
                 )
             )

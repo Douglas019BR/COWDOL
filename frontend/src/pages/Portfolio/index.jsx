@@ -18,6 +18,7 @@ import CurrencyText from '../../components/common/CurrencyText';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
+import SectorAllocation from '../../components/SectorAllocation';
 import { calculateProfit } from '../../services/api';
 import { calculateTotals } from '../../utils/portfolio';
 
@@ -127,6 +128,8 @@ export default function Portfolio() {
           ))}
         </Alert>
       )}
+
+      <SectorAllocation holdings={holdings} partial={failed.length > 0} />
 
       {successful.length > 0 && (
         <>

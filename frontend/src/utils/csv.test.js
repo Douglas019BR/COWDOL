@@ -78,6 +78,17 @@ describe('parsePortfolioCsv', () => {
     expect(errors[0].row).toBe(2);
   });
 
+  it('keeps an optional SECTOR column', () => {
+    const csv = [
+      'SYMBOL,AMOUNT,PURCHASE_DATE,PURCHASE_VALUE,SECTOR',
+      'BBSE3.sa,11,01/10/2023,31.46,Financial Services',
+      '',
+    ].join('\n');
+    const { holdings, errors } = parsePortfolioCsv(csv);
+    expect(errors).toEqual([]);
+    expect(holdings[0].SECTOR).toBe('Financial Services');
+  });
+
   it('reports empty files', () => {
     const { holdings, errors } = parsePortfolioCsv('   ');
     expect(holdings).toEqual([]);

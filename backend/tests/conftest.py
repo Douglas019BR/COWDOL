@@ -22,10 +22,12 @@ class FakeProvider:
         price: float = 12.0,
         dividends: tuple[Dividend, ...] = (),
         error: str | None = None,
+        sector: str = "energy",
     ) -> None:
         self.price = price
         self._dividends = dividends
         self.error = error
+        self.sector_name = sector
 
     def quote(self, symbol: str) -> Quote:
         """Return a fixed quote or raise a provider error."""
@@ -36,6 +38,10 @@ class FakeProvider:
     def dividends(self, symbol: str, since: date) -> tuple[Dividend, ...]:
         """Return the configured dividends."""
         return tuple(item for item in self._dividends if item.ex_date >= since)
+
+    def sector(self, symbol: str) -> str:
+        """Return the configured sector."""
+        return self.sector_name
 
 
 @pytest.fixture

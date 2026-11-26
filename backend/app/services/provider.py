@@ -11,6 +11,8 @@ from typing import Protocol, TypeVar
 import yfinance as yf
 from yfinance.exceptions import YFRateLimitError
 
+from app.services.sectors import canonical_sector, sector_from_static_map
+
 CacheKey = TypeVar("CacheKey")
 CacheValue = TypeVar("CacheValue")
 
@@ -47,6 +49,10 @@ class MarketDataProvider(Protocol):
         """Return dividends with ex-date on or after ``since``."""
         ...
 
+    def sector(self, symbol: str) -> str:
+        """Return the canonical sector key for a symbol."""
+        ...
+
 
 class YahooFinanceProvider:
     """Market data provider backed by the yfinance library."""
@@ -58,6 +64,7 @@ class YahooFinanceProvider:
         self._lock = threading.Lock()
         self._quotes: dict[str, tuple[float, Quote]] = {}
         self._dividends: dict[tuple[str, date], tuple[float, tuple[Dividend, ...]]] = {}
+        self._sectors: dict[str, tuple[float, str]] = {}
 
     def _prune(
         self,
@@ -140,3 +147,24 @@ class YahooFinanceProvider:
             self._prune(self._dividends, key)
             self._dividends[key] = (time.monotonic(), dividends)
         return dividends
+
+    def sector(self, symbol: str) -> str:
+        """Return a canonical sector, using the static map or Yahoo info."""
+        static_sector = sector_from_static_map(symbol)
+        if static_sector:
+            return static_sector
+        with self._lock:
+            cached = self._sectors.get(symbol)
+            if cached and time.monotonic() - cached[0] < self._ttl:
+                return cached[1]
+        try:
+            raw_sector = yf.Ticker(symbol).info.get("sector")
+        except YFRateLimitError as exc:
+            raise MarketDataError(
+                "Market data provider is rate limited. Try again later."
+            ) from exc
+        sector = canonical_sector(raw_sector)
+        with self._lock:
+            self._prune(self._sectors, symbol)
+            self._sectors[symbol] = (time.monotonic(), sector)
+        return sector
