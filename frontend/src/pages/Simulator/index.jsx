@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatCurrency } from '../../utils/portfolio';
+import CurrencyText from '../../components/common/CurrencyText';
 import {
   simulateCompoundInterest,
   summariseSimulation,
@@ -124,13 +124,15 @@ export default function Simulator() {
           <>
             <Typography sx={{ mt: 2 }}>
               {t('simulator.contributed')}:{' '}
-              {formatCurrency(summary.totalContributed)}
+              <CurrencyText value={summary.totalContributed} />
             </Typography>
             <Typography>
-              {t('simulator.finalValue')}: {formatCurrency(summary.finalValue)}
+              {t('simulator.finalValue')}:{' '}
+              <CurrencyText value={summary.finalValue} />
             </Typography>
             <Typography>
-              {t('simulator.earnings')}: {formatCurrency(summary.earnings)}
+              {t('simulator.earnings')}:{' '}
+              <CurrencyText value={summary.earnings} />
             </Typography>
           </>
         )}
@@ -150,7 +152,7 @@ export default function Simulator() {
                 <TableRow key={row.month}>
                   <TableCell>{row.month}</TableCell>
                   <TableCell align="right">
-                    {formatCurrency(row.balance)}
+                    <CurrencyText value={row.balance} />
                   </TableCell>
                 </TableRow>
               ))}

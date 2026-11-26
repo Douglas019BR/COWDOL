@@ -14,14 +14,12 @@ import {
 } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CurrencyText from '../../components/common/CurrencyText';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
 import { calculateProfit } from '../../services/api';
-import {
-  calculateTotals,
-  formatCurrency,
-} from '../../utils/portfolio';
+import { calculateTotals } from '../../utils/portfolio';
 
 function SummaryCard({ label, value, positive }) {
   const color = positive === undefined ? 'text.primary' : positive ? 'success.main' : 'error.main';
@@ -31,7 +29,7 @@ function SummaryCard({ label, value, positive }) {
         {label}
       </Typography>
       <Typography variant="h6" color={color}>
-        {formatCurrency(value)}
+        <CurrencyText value={value} />
       </Typography>
     </Paper>
   );
@@ -168,19 +166,34 @@ export default function Portfolio() {
                     <TableCell>{holding.symbol}</TableCell>
                     <TableCell align="right">{holding.amount}</TableCell>
                     <TableCell align="right">
-                      {formatCurrency(holding.purchase_total, holding.currency)}
+                      <CurrencyText
+                        value={holding.purchase_total}
+                        currency={holding.currency}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {formatCurrency(holding.current_value, holding.currency)}
+                      <CurrencyText
+                        value={holding.current_value}
+                        currency={holding.currency}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {formatCurrency(holding.total_dividends, holding.currency)}
+                      <CurrencyText
+                        value={holding.total_dividends}
+                        currency={holding.currency}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {formatCurrency(holding.value_difference, holding.currency)}
+                      <CurrencyText
+                        value={holding.value_difference}
+                        currency={holding.currency}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {formatCurrency(holding.balance, holding.currency)}
+                      <CurrencyText
+                        value={holding.balance}
+                        currency={holding.currency}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
