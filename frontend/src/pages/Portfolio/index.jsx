@@ -131,6 +131,8 @@ export default function Portfolio() {
         </Alert>
       )}
 
+      <SectorAllocation holdings={holdings} partial={failed.length > 0} />
+
       {successful.length > 0 && (
         <>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -189,7 +191,6 @@ export default function Portfolio() {
             </Table>
           </Paper>
 
-          <SectorAllocation holdings={holdings} partial={failed.length > 0} />
           <RankingSection holdings={successful} />
           <RecommendationSection holdings={successful} />
         </>
