@@ -52,11 +52,18 @@ describe('RiskSection', () => {
           diversification: 0,
           coverage: 1,
           available: false,
-          assets: [],
+          assets: [
+            {
+              symbol: 'PETR4.sa',
+              volatility: 0.2,
+              max_drawdown: -0.1,
+            },
+          ],
         }}
       />,
     );
     expect(screen.getByText(/Portfolio risk metrics are unavailable/i)).toBeInTheDocument();
+    expect(screen.getByText('PETR4.sa')).toBeInTheDocument();
   });
 
   it('renders nothing without data', () => {

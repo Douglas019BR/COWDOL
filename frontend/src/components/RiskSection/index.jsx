@@ -47,7 +47,6 @@ export default function RiskSection({ risk, error, loading }) {
         </Alert>
       )}
       {risk?.available !== false && risk && (
-        <>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
             <Metric
               label={t('risk.volatility')}
@@ -63,6 +62,8 @@ export default function RiskSection({ risk, error, loading }) {
               value={`${(risk.diversification * 100).toFixed(1)}%`}
             />
           </Box>
+      )}
+      {risk && (
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -97,7 +98,6 @@ export default function RiskSection({ risk, error, loading }) {
               ))}
             </TableBody>
           </Table>
-        </>
       )}
     </Paper>
   );
