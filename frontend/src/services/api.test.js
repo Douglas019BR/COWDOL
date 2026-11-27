@@ -25,6 +25,7 @@ describe('calculateProfit', () => {
       max_drawdown: -0.1,
       diversification: 0.5,
       coverage: 1,
+      available: true,
       assets: [],
     };
     const fetchMock = vi.fn().mockResolvedValue({

@@ -31,6 +31,7 @@
     "maxDrawdown": "Maximum drawdown",
     "diversification": "Diversification",
     "partial": "Partial coverage: {{percent}}% of invested value included in these metrics.",
+    "unavailable": "Portfolio risk metrics are unavailable because asset histories could not be aligned.",
     "symbol": "Symbol"
   },
   "sectors": {

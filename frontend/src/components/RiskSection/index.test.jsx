@@ -12,6 +12,7 @@ describe('RiskSection', () => {
           max_drawdown: -0.12,
           diversification: 0.5,
           coverage: 1.0,
+          available: true,
           assets: [
             {
               symbol: 'PETR4.sa',
@@ -34,11 +35,28 @@ describe('RiskSection', () => {
           max_drawdown: -0.1,
           diversification: 0.5,
           coverage: 0.4,
+          available: true,
           assets: [],
         }}
       />,
     );
     expect(screen.getByText(/Partial coverage/i)).toBeInTheDocument();
+  });
+
+  it('reports unavailable metrics', () => {
+    render(
+      <RiskSection
+        risk={{
+          volatility: 0,
+          max_drawdown: 0,
+          diversification: 0,
+          coverage: 1,
+          available: false,
+          assets: [],
+        }}
+      />,
+    );
+    expect(screen.getByText(/Portfolio risk metrics are unavailable/i)).toBeInTheDocument();
   });
 
   it('renders nothing without data', () => {

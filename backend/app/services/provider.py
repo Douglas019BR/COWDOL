@@ -193,13 +193,20 @@ class YahooFinanceProvider:
             if cached and time.monotonic() - cached[0] < self._ttl:
                 return cached[1]
         try:
-            history = yf.Ticker(symbol).history(period=period)
+            ticker = yf.Ticker(symbol)
+            history = ticker.history(period=period)
+            currency = ticker.history_metadata.get("currency")
         except YFRateLimitError as exc:
             raise MarketDataError(
                 "Market data provider is rate limited. Try again later."
             ) from exc
         if history.empty:
             raise MarketDataError(f"No price history found for {symbol}")
+        if currency != "BRL":
+            raise MarketDataError(
+                f"Unsupported currency {currency or 'unknown'} for {symbol}; "
+                "only BRL instruments are supported"
+            )
         prices = tuple(
             PricePoint(date=timestamp.date(), close=float(value))
             for timestamp, value in history["Close"].items()

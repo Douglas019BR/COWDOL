@@ -91,4 +91,5 @@ class RiskSummary(BaseModel):
     max_drawdown: float
     diversification: float
     coverage: float
+    available: bool
     assets: list[AssetRisk]

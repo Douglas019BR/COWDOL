@@ -41,7 +41,12 @@ export default function RiskSection({ risk, error, loading }) {
           {t('risk.partial', { percent: (risk.coverage * 100).toFixed(0) })}
         </Alert>
       )}
-      {risk && (
+      {risk?.available === false && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          {t('risk.unavailable')}
+        </Alert>
+      )}
+      {risk?.available !== false && risk && (
         <>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
             <Metric

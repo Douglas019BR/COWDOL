@@ -31,6 +31,7 @@
     "maxDrawdown": "Máxima queda",
     "diversification": "Diversificação",
     "partial": "Cobertura parcial: {{percent}}% do valor investido incluído nestas métricas.",
+    "unavailable": "As métricas de risco da carteira não estão disponíveis porque os históricos não puderam ser alinhados.",
     "symbol": "Ativo"
   },
   "sectors": {

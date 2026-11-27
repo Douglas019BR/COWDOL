@@ -111,9 +111,11 @@ def calculate_risk(
         successful_invested += amount_invested
 
     values = portfolio_values(successful_histories)
+    available = len(values) >= 3
     return RiskSummary(
-        volatility=annualised_volatility(values),
-        max_drawdown=max_drawdown(values),
+        volatility=annualised_volatility(values) if available else 0.0,
+        max_drawdown=max_drawdown(values) if available else 0.0,
+        available=available,
         diversification=diversification_score(sector_weights),
         coverage=successful_invested / total_invested if total_invested else 0.0,
         assets=assets,

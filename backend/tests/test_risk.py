@@ -83,8 +83,42 @@ def test_calculate_risk_combines_assets_and_sectors() -> None:
     assert len(summary.assets) == 2
     assert summary.diversification == 0.5
     assert summary.coverage == 1.0
+    assert summary.available is True
     assert summary.volatility > 0
     assert summary.max_drawdown == pytest.approx(-0.1)
+
+
+def test_calculate_risk_marks_disjoint_histories_unavailable() -> None:
+    class DisjointProvider(FakeProvider):
+        def price_history(
+            self, symbol: str, period: str = "1y"
+        ) -> tuple[PricePoint, ...]:
+            if symbol == "A.sa":
+                return (
+                    PricePoint(date(2024, 1, 1), 100.0),
+                    PricePoint(date(2024, 1, 2), 110.0),
+                )
+            return (
+                PricePoint(date(2024, 2, 1), 100.0),
+                PricePoint(date(2024, 2, 2), 90.0),
+            )
+
+    holdings = [
+        HoldingInput.model_validate(
+            {
+                "SYMBOL": symbol,
+                "AMOUNT": 10,
+                "PURCHASE_DATE": "01/01/2024",
+                "PURCHASE_VALUE": 10.0,
+                "SECTOR": "energy",
+            }
+        )
+        for symbol in ("A.sa", "B.sa")
+    ]
+    summary = calculate_risk(holdings, DisjointProvider())
+    assert summary.available is False
+    assert summary.volatility == 0.0
+    assert summary.coverage == 1.0
 
 
 def test_calculate_risk_reports_incomplete_coverage() -> None:
