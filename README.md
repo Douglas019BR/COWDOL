@@ -34,7 +34,7 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt        # inclui as dependências de runtime
-fastapi run server.py --host 127.0.0.1     # ou: uvicorn server:app --port 8000
+uvicorn server:app --host 127.0.0.1 --port 8000
 ```
 
 ### Frontend
