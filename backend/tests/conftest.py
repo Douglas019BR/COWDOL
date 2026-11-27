@@ -10,6 +10,7 @@ from app.main import app, get_provider
 from app.services.provider import (
     Dividend,
     MarketDataError,
+    PricePoint,
     Quote,
 )
 
@@ -23,7 +24,12 @@ class FakeProvider:
         dividends: tuple[Dividend, ...] = (),
         error: str | None = None,
         sector: str = "energy",
-        prices: tuple[float, ...] = (100.0, 110.0, 99.0, 105.0),
+        prices: tuple[PricePoint, ...] = (
+            PricePoint(date(2024, 1, 1), 100.0),
+            PricePoint(date(2024, 1, 2), 110.0),
+            PricePoint(date(2024, 1, 3), 99.0),
+            PricePoint(date(2024, 1, 4), 105.0),
+        ),
     ) -> None:
         self.price = price
         self._dividends = dividends
@@ -45,8 +51,8 @@ class FakeProvider:
         """Return the configured sector."""
         return self.sector_name
 
-    def price_history(self, symbol: str, period: str = "1y") -> tuple[float, ...]:
-        """Return the configured closing prices."""
+    def price_history(self, symbol: str, period: str = "1y") -> tuple[PricePoint, ...]:
+        """Return the configured dated closing prices."""
         return self.prices
 
 

@@ -36,6 +36,11 @@ export default function RiskSection({ risk, error, loading }) {
       </Typography>
       {loading && <Typography>{t('risk.analysing')}</Typography>}
       {error && <Alert severity="error">{error}</Alert>}
+      {risk?.coverage < 1 && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {t('risk.partial', { percent: (risk.coverage * 100).toFixed(0) })}
+        </Alert>
+      )}
       {risk && (
         <>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
@@ -64,9 +69,16 @@ export default function RiskSection({ risk, error, loading }) {
             <TableBody>
               {risk.assets.map((asset) => (
                 <TableRow key={asset.symbol}>
-                  <TableCell>{asset.symbol}</TableCell>
+                  <TableCell>
+                    {asset.symbol}
+                    {asset.error && (
+                      <Typography variant="caption" color="error.main" display="block">
+                        {asset.error}
+                      </Typography>
+                    )}
+                  </TableCell>
                   <TableCell align="right">
-                    {(asset.volatility * 100).toFixed(2)}%
+                    {asset.error ? '—' : `${(asset.volatility * 100).toFixed(2)}%`}
                   </TableCell>
                   <TableCell
                     align="right"
@@ -74,7 +86,7 @@ export default function RiskSection({ risk, error, loading }) {
                       color: asset.max_drawdown < 0 ? 'error.main' : 'inherit',
                     }}
                   >
-                    {(asset.max_drawdown * 100).toFixed(2)}%
+                    {asset.error ? '—' : `${(asset.max_drawdown * 100).toFixed(2)}%`}
                   </TableCell>
                 </TableRow>
               ))}

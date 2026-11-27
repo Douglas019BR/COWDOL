@@ -30,6 +30,7 @@
     "volatility": "Volatilidade anualizada",
     "maxDrawdown": "Máxima queda",
     "diversification": "Diversificação",
+    "partial": "Cobertura parcial: {{percent}}% do valor investido incluído nestas métricas.",
     "symbol": "Ativo"
   },
   "sectors": {

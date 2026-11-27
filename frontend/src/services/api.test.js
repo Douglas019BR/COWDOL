@@ -20,7 +20,13 @@ describe('calculateProfit', () => {
   });
 
   it('posts holdings to the risk endpoint', async () => {
-    const body = { volatility: 0.2, max_drawdown: -0.1, diversification: 0.5, assets: [] };
+    const body = {
+      volatility: 0.2,
+      max_drawdown: -0.1,
+      diversification: 0.5,
+      coverage: 1,
+      assets: [],
+    };
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => body,

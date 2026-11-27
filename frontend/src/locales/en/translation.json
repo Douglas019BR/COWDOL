@@ -30,6 +30,7 @@
     "volatility": "Annualised volatility",
     "maxDrawdown": "Maximum drawdown",
     "diversification": "Diversification",
+    "partial": "Partial coverage: {{percent}}% of invested value included in these metrics.",
     "symbol": "Symbol"
   },
   "sectors": {

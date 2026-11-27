@@ -46,50 +46,54 @@ export default function Portfolio() {
   const [risk, setRisk] = useState(null);
   const [riskError, setRiskError] = useState(null);
   const [riskLoading, setRiskLoading] = useState(false);
-  const requestId = useRef(0);
+  const profitRequestId = useRef(0);
+  const riskRequestId = useRef(0);
 
   function handleParsed(result) {
-    requestId.current += 1;
+    profitRequestId.current += 1;
+    riskRequestId.current += 1;
     setParsed(result);
     setHoldings([]);
     setApiError(null);
+    setLoading(false);
+    setRiskLoading(false);
     setRisk(null);
     setRiskError(null);
   }
 
   async function handleAnalyse() {
-    const currentRequest = ++requestId.current;
+    const currentRequest = ++profitRequestId.current;
     setLoading(true);
     setApiError(null);
     setHoldings([]);
     try {
       const response = await calculateProfit(parsed.holdings);
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setHoldings(response.holdings ?? []);
       }
     } catch (error) {
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setApiError(error.message);
       }
     } finally {
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setLoading(false);
       }
     }
   }
 
   async function handleRisk() {
-    const currentRequest = ++requestId.current;
+    const currentRequest = ++riskRequestId.current;
     setRiskLoading(true);
     setRiskError(null);
     setRisk(null);
     try {
       const response = await calculateRisk(parsed.holdings);
-      if (currentRequest === requestId.current) setRisk(response);
+      if (currentRequest === riskRequestId.current) setRisk(response);
     } catch (error) {
-      if (currentRequest === requestId.current) setRiskError(error.message);
+      if (currentRequest === riskRequestId.current) setRiskError(error.message);
     } finally {
-      if (currentRequest === requestId.current) setRiskLoading(false);
+      if (currentRequest === riskRequestId.current) setRiskLoading(false);
     }
   }
 

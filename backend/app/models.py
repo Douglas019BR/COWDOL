@@ -90,4 +90,5 @@ class RiskSummary(BaseModel):
     volatility: float
     max_drawdown: float
     diversification: float
+    coverage: float
     assets: list[AssetRisk]

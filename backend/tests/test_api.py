@@ -91,6 +91,7 @@ def test_risk_metrics_endpoint(client: TestClient) -> None:
     body = response.json()
     assert body["assets"][0]["symbol"] == "TEST3.sa"
     assert body["diversification"] == 0.0
+    assert body["coverage"] == 1.0
 
 
 def test_profit_calculate_rejects_invalid_holdings(
