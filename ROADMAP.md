@@ -1,5 +1,7 @@
 # COWDOL Rewrite Roadmap
 
+> **Status: delivered.** All ten features below were implemented, reviewed with CodeRabbit and merged into `main` through PRs #23-#48. Quality guardrails (exact pins, cspell, secret scan and CI) are described in [README.md](./README.md). Sector grouping now uses a pie chart.
+
 ## Context
 
 COWDOL is an open-source Brazilian investment-management platform created several years ago. The current codebase is a single-page app:

@@ -1,108 +1,100 @@
-# COWDOL - Plataforma de Gestão de Investimentos
+# COWDOL — Plataforma de Gestão de Investimentos
 
 ## Visão Geral
 
-COWDOL é uma plataforma de gestão de investimentos open-source projetada para ajudá-lo a tomar decisões financeiras informadas. O sistema permite que você carregue seus dados de investimento e gera dashboards abrangentes que fornecem um entendimento claro do seu desempenho financeiro.
+COWDOL é uma plataforma open-source de gestão de investimentos focada no mercado brasileiro. Envie um CSV da sua carteira e a aplicação calcula preços, dividendos, lucro/prejuízo, alocação por setor e recomendações, usando dados de mercado em tempo real do Yahoo Finance.
 
-### Funcionalidades Principais
+## Funcionalidades
 
-- **Dashboard de Investimentos**: Visualize e acompanhe o desempenho do seu portfólio de investimentos
-- **Análise Financeira**: Métricas detalhadas sobre seus retornos de investimento, incluindo lucro/prejuízo total
-- **Calculadora de Juros Compostos**: Simule vários cenários de investimento
-- **Recomendador de Fundos de Investimento**: Obtenha recomendações baseadas em dados para potenciais investimentos
+- **Upload de CSV** com validação de colunas, delimitador e linhas inválidas (coluna `SECTOR` opcional)
+- **Resultados por ativo**: valor investido, valor atual, dividendos, diferença e saldo
+- **Totais da carteira**: total investido, valor atual, dividendos e lucro/prejuízo
+- **Alocação por setor** com gráfico de pizza e percentuais
+- **Melhores e piores investimentos** (top 5 por taxa de retorno)
+- **Simulador de juros** compostos ou simples, com taxa anual ou mensal
+- **Recomendação de fundos** baseada em retorno e dividendos (heurística, não é aconselhamento financeiro)
+- **Interface EN/PT** responsiva e ticker de moedas
+- Valores negativos exibidos em vermelho em toda a interface
 
-## Filosofia do Projeto
+## Arquitetura
 
-COWDOL é construído com um compromisso com:
+O projeto é dividido em duas aplicações independentes, sem banco de dados (os cálculos são feitos por requisição a partir do CSV enviado):
 
-- **Desenvolvimento Open Source**: Permitindo contribuição e transparência da comunidade
-- **Educação**: Servindo como implementação de referência para práticas modernas de engenharia de software
-- **Capacitação Financeira**: Fornecendo ferramentas que ajudam as pessoas a tomar melhores decisões de investimento
+- **Backend**: FastAPI + Pydantic, acesso ao Yahoo Finance isolado atrás de um provider com cache limitado e tratamento de rate limit. Python 3.12, `ruff`, `mypy` e `pytest`.
+- **Frontend**: Vite + React 18 + MUI + React Router + react-i18next + PapaParse. Vitest e ESLint para testes e lint.
 
-## Arquitetura Técnica
-
-O projeto é estruturado com microsserviços em containers, separando as preocupações de frontend e backend:
-
-- **Frontend**: Interface moderna construída com princípios de design responsivo
-- **Backend**: Arquitetura de API escalável servindo dados financeiros e análises
-- **Containerização**: Garantindo ambientes de desenvolvimento e implantação consistentes
-
-Esta separação fornece diversos benefícios:
-- Escalabilidade independente dos componentes
-- Flexibilidade tecnológica
-- Colaboração mais fácil para contribuidores
-- Testes e implantação simplificados
-
-## Roadmap de Desenvolvimento
-
-Prioridades atuais:
-
-- Corrigir problemas do frontend
-- Adicionar soma total de valores na análise de portfólio
-- Implementar cálculo de lucro/prejuízo total
-- Adicionar análise de desempenho dos "5 Melhores" e "5 Piores" investimentos
+Detalhes e decisões em [ROADMAP.md](./ROADMAP.md). O Yahoo Finance é uma fonte não oficial; o provider centraliza o acesso para permitir troca futura de provedor.
 
 ## Primeiros Passos
 
-### Configuração do Backend
+### Backend
 
 ```sh
-cd backend/
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt        # inclui as dependências de runtime
+uvicorn server:app --host 127.0.0.1 --port 8000
 ```
 
-### Install the required libraries:
-```sh
-pip install -r requirements.txt
-```
-
-### Run the script:
-```sh
-fastapi run server.py --host 127.0.0.1
-```
-
-### Configuração do Frontend
+### Frontend
 
 ```sh
-cd frontend/
-```
-
-### Install the required libraries:
-```sh
+cd frontend
 npm install
+npm run dev
 ```
 
-### Run the script:
+Abra `http://localhost:5173`. A API padrão é `http://localhost:8000`.
+
+### Configuração
+
+| Variável | Onde | Descrição |
+| --- | --- | --- |
+| `VITE_API_URL` | frontend | URL base da API (padrão `http://localhost:8000`) |
+| `COWDOL_CORS_ORIGINS` | backend | Origens permitidas, separadas por vírgula |
+| `COWDOL_CACHE_TTL_SECONDS` | backend | TTL do cache de cotações/dividendos (padrão `300`) |
+
+## Testes e Qualidade
+
 ```sh
-npm run start
+# Backend (em backend/)
+ruff check . && ruff format --check . && mypy app tests && pytest
+
+# Frontend (em frontend/)
+npm run lint && npm test && npm run build
+
+# Repositório
+python3 scripts/secret_scan.py
+python3 -m unittest scripts/test_secret_scan.py
+frontend/node_modules/.bin/cspell --config cspell.json .
+```
+
+Os mesmos comandos rodam automaticamente no GitHub Actions em cada push e PR. As versões das dependências Python estão fixadas em `requirements*.txt`; o frontend usa lockfile com versões exatas.
+
+## Estrutura
+
+```
+backend/app/          API, modelos, cálculo e provider de market data
+backend/tests/        testes unitários e de API
+frontend/src/         componentes, páginas, serviços e utilitários
+.github/workflows/    CI de backend, frontend e guardrails
+scripts/              varredura de segredos e testes da varredura
 ```
 
 ## Contribuindo
 
-Obrigado pelo seu interesse em contribuir com o COWDOL! Recebemos contribuições de desenvolvedores de todos os níveis de experiência.
+1. Crie uma issue descrevendo o trabalho.
+2. Crie uma branch `feat-<número da issue>/<descrição>` (ex.: `feat-45/sector-groups`).
+3. Faça alterações com testes e evidências de execução.
+4. Abra um PR para `main` referenciando a issue; o CodeRabbit revisa automaticamente.
 
-Para contribuir:
-1. Crie um issue descrevendo o que você planeja trabalhar
-2. Faça um fork do repositório
-3. Crie uma branch referenciando o número do seu issue (ex: `feature/issue-42`)
-4. Faça suas alterações seguindo nossos padrões de qualidade de código
-5. Submeta um pull request para a branch main
-
-Nos esforçamos para manter uma alta qualidade de código através de:
-- Padrões de codificação consistentes
-- Cobertura abrangente de testes
-- Princípios de arquitetura limpa
-- Documentação detalhada
-
-Este projeto é focado em investimentos nacionais brasileiros, priorizando as necessidades específicas do mercado financeiro brasileiro e suas particularidades regulatórias.
-
-Para mais detalhes, consulte nossas [Diretrizes de Contribuição](./CONTRIBUTING.md).
+Diretrizes completas em [CONTRIBUTING.md](./CONTRIBUTING.md) e [AGENTS.md](./AGENTS.md).
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](./LICENSE) para detalhes.
+MIT — veja [LICENSE](./LICENSE).
 
 ## Contato
 
-Para quaisquer dúvidas ou informações, entre em contato com [douglassermarini@gmail.com] ou outro colaborador.
-
-
+douglassermarini@gmail.com ou outro colaborador.
