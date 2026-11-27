@@ -23,6 +23,15 @@
   "currency": {
     "label": "Cotações de moedas em relação ao BRL"
   },
+  "risk": {
+    "title": "Análise de risco",
+    "analyse": "Analisar risco",
+    "analysing": "Calculando métricas de risco...",
+    "volatility": "Volatilidade anualizada",
+    "maxDrawdown": "Máxima queda",
+    "diversification": "Diversificação",
+    "symbol": "Ativo"
+  },
   "sectors": {
     "title": "Alocação por setor",
     "partial": "Parcial: inclui ativos que não puderam ser analisados.",

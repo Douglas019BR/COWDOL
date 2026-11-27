@@ -74,6 +74,25 @@ def test_repeated_requests_share_provider_cache() -> None:
     assert mock.call_count == 3
 
 
+def test_risk_metrics_endpoint(client: TestClient) -> None:
+    payload = {
+        "data": [
+            {
+                "SYMBOL": "TEST3.sa",
+                "AMOUNT": 10,
+                "PURCHASE_DATE": "01/01/2024",
+                "PURCHASE_VALUE": 10.0,
+                "SECTOR": "energy",
+            }
+        ]
+    }
+    response = client.post("/risk-metrics", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["assets"][0]["symbol"] == "TEST3.sa"
+    assert body["diversification"] == 0.0
+
+
 def test_profit_calculate_rejects_invalid_holdings(
     client: TestClient,
 ) -> None:

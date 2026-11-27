@@ -23,6 +23,15 @@
   "currency": {
     "label": "Currency rates against BRL"
   },
+  "risk": {
+    "title": "Risk analysis",
+    "analyse": "Analyse risk",
+    "analysing": "Calculating risk metrics...",
+    "volatility": "Annualised volatility",
+    "maxDrawdown": "Maximum drawdown",
+    "diversification": "Diversification",
+    "symbol": "Symbol"
+  },
   "sectors": {
     "title": "Allocation by sector",
     "partial": "Partial: includes assets that could not be analysed.",

@@ -18,8 +18,9 @@ import CurrencyText from '../../components/common/CurrencyText';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
+import RiskSection from '../../components/RiskSection';
 import SectorAllocation from '../../components/SectorAllocation';
-import { calculateProfit } from '../../services/api';
+import { calculateProfit, calculateRisk } from '../../services/api';
 import { calculateTotals } from '../../utils/portfolio';
 
 function SummaryCard({ label, value, positive }) {
@@ -42,6 +43,9 @@ export default function Portfolio() {
   const [holdings, setHoldings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [risk, setRisk] = useState(null);
+  const [riskError, setRiskError] = useState(null);
+  const [riskLoading, setRiskLoading] = useState(false);
   const requestId = useRef(0);
 
   function handleParsed(result) {
@@ -49,6 +53,8 @@ export default function Portfolio() {
     setParsed(result);
     setHoldings([]);
     setApiError(null);
+    setRisk(null);
+    setRiskError(null);
   }
 
   async function handleAnalyse() {
@@ -72,6 +78,21 @@ export default function Portfolio() {
     }
   }
 
+  async function handleRisk() {
+    const currentRequest = ++requestId.current;
+    setRiskLoading(true);
+    setRiskError(null);
+    setRisk(null);
+    try {
+      const response = await calculateRisk(parsed.holdings);
+      if (currentRequest === requestId.current) setRisk(response);
+    } catch (error) {
+      if (currentRequest === requestId.current) setRiskError(error.message);
+    } finally {
+      if (currentRequest === requestId.current) setRiskLoading(false);
+    }
+  }
+
   const successful = holdings.filter((holding) => !holding.error);
   const failed = holdings.filter((holding) => holding.error);
   const totals = calculateTotals(successful);
@@ -84,14 +105,22 @@ export default function Portfolio() {
         </Typography>
         <PortfolioUpload onParsed={handleParsed} />
         {parsed?.holdings?.length > 0 && (
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={handleAnalyse}
-            disabled={loading}
-          >
-            {t('portfolio.analyse')}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              onClick={handleAnalyse}
+              disabled={loading}
+            >
+              {t('portfolio.analyse')}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleRisk}
+              disabled={riskLoading}
+            >
+              {t('risk.analyse')}
+            </Button>
+          </Box>
         )}
       </Paper>
 
@@ -130,6 +159,7 @@ export default function Portfolio() {
       )}
 
       <SectorAllocation holdings={holdings} partial={failed.length > 0} />
+      <RiskSection risk={risk} error={riskError} loading={riskLoading} />
 
       {successful.length > 0 && (
         <>

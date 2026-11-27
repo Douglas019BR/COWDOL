@@ -5,6 +5,14 @@ from app.services.provider import MarketDataError, MarketDataProvider
 from app.services.sectors import canonical_sector
 
 
+def calculate_sector(holding: HoldingInput, provider: MarketDataProvider) -> str:
+    """Resolve a sector from the CSV override or the provider."""
+    try:
+        return canonical_sector(holding.sector or provider.sector(holding.symbol))
+    except MarketDataError:
+        return "other"
+
+
 def calculate_holding(
     holding: HoldingInput, provider: MarketDataProvider
 ) -> HoldingResult:
@@ -15,10 +23,7 @@ def calculate_holding(
     current_value = quote.price * holding.amount
     purchase_total = holding.purchase_value * holding.amount
     value_difference = current_value - purchase_total
-    try:
-        sector = canonical_sector(holding.sector or provider.sector(holding.symbol))
-    except MarketDataError:
-        sector = "other"
+    sector = calculate_sector(holding, provider)
     return HoldingResult(
         symbol=holding.symbol,
         amount=holding.amount,

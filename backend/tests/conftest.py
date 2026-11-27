@@ -23,11 +23,13 @@ class FakeProvider:
         dividends: tuple[Dividend, ...] = (),
         error: str | None = None,
         sector: str = "energy",
+        prices: tuple[float, ...] = (100.0, 110.0, 99.0, 105.0),
     ) -> None:
         self.price = price
         self._dividends = dividends
         self.error = error
         self.sector_name = sector
+        self.prices = prices
 
     def quote(self, symbol: str) -> Quote:
         """Return a fixed quote or raise a provider error."""
@@ -42,6 +44,10 @@ class FakeProvider:
     def sector(self, symbol: str) -> str:
         """Return the configured sector."""
         return self.sector_name
+
+    def price_history(self, symbol: str, period: str = "1y") -> tuple[float, ...]:
+        """Return the configured closing prices."""
+        return self.prices
 
 
 @pytest.fixture

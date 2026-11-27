@@ -4,9 +4,10 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.models import PortfolioRequest, PortfolioResponse
+from app.models import PortfolioRequest, PortfolioResponse, RiskSummary
 from app.services.portfolio import calculate_portfolio
 from app.services.provider import MarketDataProvider, YahooFinanceProvider
+from app.services.risk import calculate_risk
 
 settings = get_settings()
 app = FastAPI(title="COWDOL API", version="0.1.0")
@@ -46,3 +47,12 @@ def profit_calculate(
 ) -> PortfolioResponse:
     """Calculate results for every holding in the uploaded portfolio."""
     return PortfolioResponse(holdings=calculate_portfolio(request.data, provider))
+
+
+@app.post("/risk-metrics", response_model=RiskSummary)
+def risk_metrics(
+    request: PortfolioRequest,
+    provider: MarketDataProvider = Depends(get_provider),
+) -> RiskSummary:
+    """Calculate volatility, drawdown and diversification for a portfolio."""
+    return calculate_risk(request.data, provider)
