@@ -29,7 +29,6 @@ export default function SavedPortfolios() {
       .then((data) => {
         if (requestId === latestRefresh.current) {
           setItems(data);
-          setError(null);
         }
       })
       .catch((requestError) => {
