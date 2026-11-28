@@ -93,3 +93,31 @@ class RiskSummary(BaseModel):
     coverage: float
     available: bool
     assets: list[AssetRisk]
+
+
+class PortfolioSaveRequest(BaseModel):
+    """Payload stored for a saved portfolio."""
+
+    name: str = Field(min_length=1, max_length=120)
+    holdings: list[HoldingInput]
+    results: PortfolioResponse | None = None
+    risk: RiskSummary | None = None
+
+
+class SavedPortfolioSummary(BaseModel):
+    """Metadata for one saved portfolio."""
+
+    id: str
+    name: str
+    created_at: str
+
+
+class SavedPortfolio(BaseModel):
+    """Complete saved portfolio."""
+
+    id: str
+    name: str
+    created_at: str
+    holdings: list[HoldingInput]
+    results: PortfolioResponse | None
+    risk: RiskSummary | None
