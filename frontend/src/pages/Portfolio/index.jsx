@@ -4,23 +4,33 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import CurrencyText from '../../components/common/CurrencyText';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
 import RiskSection from '../../components/RiskSection';
 import SectorAllocation from '../../components/SectorAllocation';
-import { calculateProfit, calculateRisk } from '../../services/api';
+import {
+  calculateProfit,
+  calculateRisk,
+  savePortfolio,
+} from '../../services/api';
 import { calculateTotals } from '../../utils/portfolio';
 
 function SummaryCard({ label, value, positive }) {
@@ -39,6 +49,7 @@ function SummaryCard({ label, value, positive }) {
 
 export default function Portfolio() {
   const { t } = useTranslation();
+  const location = useLocation();
   const [parsed, setParsed] = useState(null);
   const [holdings, setHoldings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,8 +57,39 @@ export default function Portfolio() {
   const [risk, setRisk] = useState(null);
   const [riskError, setRiskError] = useState(null);
   const [riskLoading, setRiskLoading] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
   const profitRequestId = useRef(0);
   const riskRequestId = useRef(0);
+
+  useEffect(() => {
+    const saved = location.state?.saved;
+    if (!saved) return;
+    setParsed({ holdings: saved.holdings ?? [], errors: [] });
+    setHoldings(saved.results?.holdings ?? []);
+    setRisk(saved.risk ?? null);
+  }, [location.state]);
+
+  async function handleSave() {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await savePortfolio({
+        name: saveName,
+        holdings: parsed.holdings,
+        results: { holdings },
+        risk,
+      });
+      setSaveOpen(false);
+      setSaveName('');
+    } catch (error) {
+      setSaveError(error.message);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function handleParsed(result) {
     profitRequestId.current += 1;
@@ -123,6 +165,9 @@ export default function Portfolio() {
               disabled={riskLoading}
             >
               {t('risk.analyse')}
+            </Button>
+            <Button variant="outlined" onClick={() => setSaveOpen(true)}>
+              {t('saved.save')}
             </Button>
           </Box>
         )}
@@ -242,6 +287,31 @@ export default function Portfolio() {
           <RecommendationSection holdings={successful} />
         </>
       )}
+
+      <Dialog open={saveOpen} onClose={() => setSaveOpen(false)}>
+        <DialogTitle>{t('saved.saveTitle')}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            label={t('saved.name')}
+            value={saveName}
+            onChange={(event) => setSaveName(event.target.value)}
+            fullWidth
+            sx={{ mt: 1 }}
+          />
+          {saveError && <Alert severity="error" sx={{ mt: 2 }}>{saveError}</Alert>}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSaveOpen(false)}>{t('common.cancel')}</Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            disabled={saving || !saveName.trim()}
+          >
+            {t('saved.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

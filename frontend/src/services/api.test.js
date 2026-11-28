@@ -1,5 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { calculateProfit, calculateRisk } from './api';
+import {
+  calculateProfit,
+  calculateRisk,
+  deletePortfolio,
+  listPortfolios,
+  loadPortfolio,
+  savePortfolio,
+} from './api';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -36,6 +43,27 @@ describe('calculateProfit', () => {
 
     await expect(calculateRisk([{ symbol: 'BBSE3.sa' }])).resolves.toEqual(body);
     expect(fetchMock.mock.calls[0][0]).toContain('/risk-metrics');
+  });
+
+  it('saves, lists, loads and deletes portfolios', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ id: 'abc' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(savePortfolio({ name: 'Carteira', holdings: [] })).resolves.toEqual({ id: 'abc' });
+    expect(fetchMock.mock.calls[0][1].method).toBe('POST');
+
+    await listPortfolios();
+    expect(fetchMock.mock.calls[1][0]).toContain('/portfolios');
+
+    await loadPortfolio('abc');
+    expect(fetchMock.mock.calls[2][0]).toContain('/portfolios/abc');
+
+    await deletePortfolio('abc');
+    expect(fetchMock.mock.calls[3][1].method).toBe('DELETE');
   });
 
   it('throws on a non-ok HTTP response', async () => {

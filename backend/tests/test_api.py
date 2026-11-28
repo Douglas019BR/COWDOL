@@ -1,8 +1,10 @@
 """API-level tests for the COWDOL service."""
 
 from datetime import UTC, datetime
+from pathlib import Path
 from unittest.mock import patch
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -72,6 +74,36 @@ def test_repeated_requests_share_provider_cache() -> None:
             live_client.post("/profit-calculate", json=payload)
             live_client.post("/profit-calculate", json=payload)
     assert mock.call_count == 3
+
+
+def test_saved_portfolio_endpoints(
+    client: TestClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("COWDOL_DB_PATH", str(tmp_path / "api.db"))
+    payload = {
+        "name": "Carteira",
+        "holdings": [
+            {
+                "SYMBOL": "TEST3.sa",
+                "AMOUNT": 10,
+                "PURCHASE_DATE": "01/01/2024",
+                "PURCHASE_VALUE": 10.0,
+            }
+        ],
+    }
+    created = client.post("/portfolios", json=payload)
+    assert created.status_code == 201
+    portfolio_id = created.json()["id"]
+
+    assert client.get("/portfolios").json()[0]["name"] == "Carteira"
+    loaded = client.get(f"/portfolios/{portfolio_id}")
+    assert loaded.status_code == 200
+    assert loaded.json()["holdings"][0]["symbol"] == "TEST3.sa"
+
+    assert client.delete(f"/portfolios/{portfolio_id}").json() == {"deleted": True}
+    assert client.get(f"/portfolios/{portfolio_id}").status_code == 404
 
 
 def test_risk_metrics_endpoint(client: TestClient) -> None:

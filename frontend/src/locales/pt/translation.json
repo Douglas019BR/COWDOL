@@ -5,7 +5,11 @@
     "title": "Seus investimentos, com clareza",
     "description": "Envie o CSV da sua carteira para analisar preços, dividendos e lucro ou prejuízo.",
     "openPortfolio": "Abrir carteira",
-    "openSimulator": "Simulador de juros compostos"
+    "openSimulator": "Simulador de juros compostos",
+    "openSaved": "Carteiras salvas"
+  },
+  "common": {
+    "cancel": "Cancelar"
   },
   "language": {
     "label": "Idioma",
@@ -22,6 +26,17 @@
   },
   "currency": {
     "label": "Cotações de moedas em relação ao BRL"
+  },
+  "saved": {
+    "title": "Carteiras salvas",
+    "empty": "Nenhuma carteira salva ainda.",
+    "name": "Nome",
+    "createdAt": "Criada em",
+    "actions": "Ações",
+    "load": "Carregar",
+    "delete": "Excluir",
+    "save": "Salvar carteira",
+    "saveTitle": "Salvar esta carteira"
   },
   "risk": {
     "title": "Análise de risco",

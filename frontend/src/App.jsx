@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Portfolio from './pages/Portfolio';
+import SavedPortfolios from './pages/SavedPortfolios';
 import Simulator from './pages/Simulator';
 
 const router = createBrowserRouter(
@@ -13,6 +14,7 @@ const router = createBrowserRouter(
         { index: true, element: <Home /> },
         { path: 'portfolio', element: <Portfolio /> },
         { path: 'simulator', element: <Simulator /> },
+        { path: 'saved', element: <SavedPortfolios /> },
       ],
     },
   ],

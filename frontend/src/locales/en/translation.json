@@ -5,7 +5,11 @@
     "title": "Your investments, clearly",
     "description": "Upload your portfolio CSV to analyse prices, dividends and profit and loss.",
     "openPortfolio": "Open portfolio",
-    "openSimulator": "Compound interest simulator"
+    "openSimulator": "Compound interest simulator",
+    "openSaved": "Saved portfolios"
+  },
+  "common": {
+    "cancel": "Cancel"
   },
   "language": {
     "label": "Language",
@@ -22,6 +26,17 @@
   },
   "currency": {
     "label": "Currency rates against BRL"
+  },
+  "saved": {
+    "title": "Saved portfolios",
+    "empty": "No portfolios saved yet.",
+    "name": "Name",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "load": "Load",
+    "delete": "Delete",
+    "save": "Save portfolio",
+    "saveTitle": "Save this portfolio"
   },
   "risk": {
     "title": "Risk analysis",

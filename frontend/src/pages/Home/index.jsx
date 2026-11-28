@@ -26,6 +26,9 @@ export default function Home() {
           <Button component={Link} to="/simulator" variant="outlined">
             {t('home.openSimulator')}
           </Button>
+          <Button component={Link} to="/saved" variant="outlined">
+            {t('home.openSaved')}
+          </Button>
         </Box>
       </Paper>
     </Box>

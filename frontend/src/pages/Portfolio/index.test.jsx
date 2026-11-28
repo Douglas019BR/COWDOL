@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import '../../i18n';
 
 const resolvers = [];
@@ -29,7 +30,11 @@ import Portfolio from './index';
 
 describe('Portfolio', () => {
   it('ignores results from an analysis superseded by a new file', async () => {
-    render(<Portfolio />);
+    render(
+      <MemoryRouter>
+        <Portfolio />
+      </MemoryRouter>,
+    );
     fireEvent.click(screen.getByText('upload'));
     fireEvent.click(screen.getByText(/Analyse portfolio|Analisar carteira/));
     fireEvent.click(screen.getByText('upload'));
@@ -54,7 +59,11 @@ describe('Portfolio', () => {
   });
 
   it('shows allocation when every market-data lookup fails', async () => {
-    render(<Portfolio />);
+    render(
+      <MemoryRouter>
+        <Portfolio />
+      </MemoryRouter>,
+    );
     fireEvent.click(screen.getByText('upload'));
     fireEvent.click(screen.getByText(/Analyse portfolio|Analisar carteira/));
     resolvers.at(-1)({

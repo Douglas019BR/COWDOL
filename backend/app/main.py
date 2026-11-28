@@ -1,10 +1,18 @@
 """FastAPI application for COWDOL."""
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from app import db
 from app.config import get_settings
-from app.models import PortfolioRequest, PortfolioResponse, RiskSummary
+from app.models import (
+    PortfolioRequest,
+    PortfolioResponse,
+    PortfolioSaveRequest,
+    RiskSummary,
+    SavedPortfolio,
+    SavedPortfolioSummary,
+)
 from app.services.portfolio import calculate_portfolio
 from app.services.provider import MarketDataProvider, YahooFinanceProvider
 from app.services.risk import calculate_risk
@@ -56,3 +64,36 @@ def risk_metrics(
 ) -> RiskSummary:
     """Calculate volatility, drawdown and diversification for a portfolio."""
     return calculate_risk(request.data, provider)
+
+
+@app.post("/portfolios", response_model=SavedPortfolioSummary, status_code=201)
+def save_portfolio(request: PortfolioSaveRequest) -> SavedPortfolioSummary:
+    """Persist a portfolio with its latest analysis."""
+    saved = db.load_portfolio(db.save_portfolio(request.model_dump(mode="json")))
+    assert saved is not None
+    return SavedPortfolioSummary(
+        id=saved["id"], name=saved["name"], created_at=saved["created_at"]
+    )
+
+
+@app.get("/portfolios", response_model=list[SavedPortfolioSummary])
+def list_portfolios() -> list[SavedPortfolioSummary]:
+    """List saved portfolios."""
+    return [SavedPortfolioSummary(**item) for item in db.list_portfolios()]
+
+
+@app.get("/portfolios/{portfolio_id}", response_model=SavedPortfolio)
+def get_portfolio(portfolio_id: str) -> SavedPortfolio:
+    """Load one saved portfolio."""
+    saved = db.load_portfolio(portfolio_id)
+    if saved is None:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    return SavedPortfolio(**saved)
+
+
+@app.delete("/portfolios/{portfolio_id}")
+def delete_portfolio(portfolio_id: str) -> dict[str, bool]:
+    """Delete one saved portfolio."""
+    if not db.delete_portfolio(portfolio_id):
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    return {"deleted": True}

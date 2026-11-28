@@ -1,3 +1,6 @@
+# local SQLite database
+backend/*.db
+
 # frontend (React)
 frontend/node_modules/
 frontend/node_modules/*
