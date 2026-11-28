@@ -73,3 +73,23 @@ class PortfolioResponse(BaseModel):
     """Response body containing one result per holding."""
 
     holdings: list[HoldingResult]
+
+
+class AssetRisk(BaseModel):
+    """Risk metrics for one asset."""
+
+    symbol: str
+    volatility: float
+    max_drawdown: float
+    error: str | None = None
+
+
+class RiskSummary(BaseModel):
+    """Portfolio-level risk metrics."""
+
+    volatility: float
+    max_drawdown: float
+    diversification: float
+    coverage: float
+    available: bool
+    assets: list[AssetRisk]

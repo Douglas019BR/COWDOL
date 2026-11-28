@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-export async function calculateProfit(holdings) {
-  const response = await fetch(`${API_URL}/profit-calculate`, {
+async function post(path, holdings) {
+  const response = await fetch(`${API_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ data: holdings }),
@@ -14,4 +14,12 @@ export async function calculateProfit(holdings) {
   return response.json();
 }
 
-export default { calculateProfit };
+export function calculateProfit(holdings) {
+  return post('/profit-calculate', holdings);
+}
+
+export function calculateRisk(holdings) {
+  return post('/risk-metrics', holdings);
+}
+
+export default { calculateProfit, calculateRisk };

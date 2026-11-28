@@ -18,8 +18,9 @@ import CurrencyText from '../../components/common/CurrencyText';
 import PortfolioUpload from '../../components/PortfolioUpload';
 import RankingSection from '../../components/RankingSection';
 import RecommendationSection from '../../components/RecommendationSection';
+import RiskSection from '../../components/RiskSection';
 import SectorAllocation from '../../components/SectorAllocation';
-import { calculateProfit } from '../../services/api';
+import { calculateProfit, calculateRisk } from '../../services/api';
 import { calculateTotals } from '../../utils/portfolio';
 
 function SummaryCard({ label, value, positive }) {
@@ -42,33 +43,57 @@ export default function Portfolio() {
   const [holdings, setHoldings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
-  const requestId = useRef(0);
+  const [risk, setRisk] = useState(null);
+  const [riskError, setRiskError] = useState(null);
+  const [riskLoading, setRiskLoading] = useState(false);
+  const profitRequestId = useRef(0);
+  const riskRequestId = useRef(0);
 
   function handleParsed(result) {
-    requestId.current += 1;
+    profitRequestId.current += 1;
+    riskRequestId.current += 1;
     setParsed(result);
     setHoldings([]);
     setApiError(null);
+    setLoading(false);
+    setRiskLoading(false);
+    setRisk(null);
+    setRiskError(null);
   }
 
   async function handleAnalyse() {
-    const currentRequest = ++requestId.current;
+    const currentRequest = ++profitRequestId.current;
     setLoading(true);
     setApiError(null);
     setHoldings([]);
     try {
       const response = await calculateProfit(parsed.holdings);
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setHoldings(response.holdings ?? []);
       }
     } catch (error) {
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setApiError(error.message);
       }
     } finally {
-      if (currentRequest === requestId.current) {
+      if (currentRequest === profitRequestId.current) {
         setLoading(false);
       }
+    }
+  }
+
+  async function handleRisk() {
+    const currentRequest = ++riskRequestId.current;
+    setRiskLoading(true);
+    setRiskError(null);
+    setRisk(null);
+    try {
+      const response = await calculateRisk(parsed.holdings);
+      if (currentRequest === riskRequestId.current) setRisk(response);
+    } catch (error) {
+      if (currentRequest === riskRequestId.current) setRiskError(error.message);
+    } finally {
+      if (currentRequest === riskRequestId.current) setRiskLoading(false);
     }
   }
 
@@ -84,14 +109,22 @@ export default function Portfolio() {
         </Typography>
         <PortfolioUpload onParsed={handleParsed} />
         {parsed?.holdings?.length > 0 && (
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={handleAnalyse}
-            disabled={loading}
-          >
-            {t('portfolio.analyse')}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              onClick={handleAnalyse}
+              disabled={loading}
+            >
+              {t('portfolio.analyse')}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleRisk}
+              disabled={riskLoading}
+            >
+              {t('risk.analyse')}
+            </Button>
+          </Box>
         )}
       </Paper>
 
@@ -130,6 +163,7 @@ export default function Portfolio() {
       )}
 
       <SectorAllocation holdings={holdings} partial={failed.length > 0} />
+      <RiskSection risk={risk} error={riskError} loading={riskLoading} />
 
       {successful.length > 0 && (
         <>

@@ -23,6 +23,17 @@
   "currency": {
     "label": "Cotações de moedas em relação ao BRL"
   },
+  "risk": {
+    "title": "Análise de risco",
+    "analyse": "Analisar risco",
+    "analysing": "Calculando métricas de risco...",
+    "volatility": "Volatilidade anualizada",
+    "maxDrawdown": "Máxima queda",
+    "diversification": "Diversificação",
+    "partial": "Cobertura parcial: {{percent}}% do valor investido incluído nestas métricas.",
+    "unavailable": "As métricas de risco da carteira não estão disponíveis porque os históricos não puderam ser alinhados.",
+    "symbol": "Ativo"
+  },
   "sectors": {
     "title": "Alocação por setor",
     "partial": "Parcial: inclui ativos que não puderam ser analisados.",

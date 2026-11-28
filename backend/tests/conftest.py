@@ -10,6 +10,7 @@ from app.main import app, get_provider
 from app.services.provider import (
     Dividend,
     MarketDataError,
+    PricePoint,
     Quote,
 )
 
@@ -23,11 +24,18 @@ class FakeProvider:
         dividends: tuple[Dividend, ...] = (),
         error: str | None = None,
         sector: str = "energy",
+        prices: tuple[PricePoint, ...] = (
+            PricePoint(date(2024, 1, 1), 100.0),
+            PricePoint(date(2024, 1, 2), 110.0),
+            PricePoint(date(2024, 1, 3), 99.0),
+            PricePoint(date(2024, 1, 4), 105.0),
+        ),
     ) -> None:
         self.price = price
         self._dividends = dividends
         self.error = error
         self.sector_name = sector
+        self.prices = prices
 
     def quote(self, symbol: str) -> Quote:
         """Return a fixed quote or raise a provider error."""
@@ -42,6 +50,10 @@ class FakeProvider:
     def sector(self, symbol: str) -> str:
         """Return the configured sector."""
         return self.sector_name
+
+    def price_history(self, symbol: str, period: str = "1y") -> tuple[PricePoint, ...]:
+        """Return the configured dated closing prices."""
+        return self.prices
 
 
 @pytest.fixture

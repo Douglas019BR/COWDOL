@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import threading
 import time
 from dataclasses import dataclass
@@ -19,6 +20,14 @@ CacheValue = TypeVar("CacheValue")
 
 class MarketDataError(Exception):
     """Raised when market data cannot be retrieved."""
+
+
+@dataclass(frozen=True)
+class PricePoint:
+    """One daily closing price."""
+
+    date: date
+    close: float
 
 
 @dataclass(frozen=True)
@@ -53,6 +62,10 @@ class MarketDataProvider(Protocol):
         """Return the canonical sector key for a symbol."""
         ...
 
+    def price_history(self, symbol: str, period: str = "1y") -> tuple[PricePoint, ...]:
+        """Return dated daily closing prices for a symbol."""
+        ...
+
 
 class YahooFinanceProvider:
     """Market data provider backed by the yfinance library."""
@@ -65,6 +78,9 @@ class YahooFinanceProvider:
         self._quotes: dict[str, tuple[float, Quote]] = {}
         self._dividends: dict[tuple[str, date], tuple[float, tuple[Dividend, ...]]] = {}
         self._sectors: dict[str, tuple[float, str]] = {}
+        self._histories: dict[
+            tuple[str, str], tuple[float, tuple[PricePoint, ...]]
+        ] = {}
 
     def _prune(
         self,
@@ -168,3 +184,37 @@ class YahooFinanceProvider:
             self._prune(self._sectors, symbol)
             self._sectors[symbol] = (time.monotonic(), sector)
         return sector
+
+    def price_history(self, symbol: str, period: str = "1y") -> tuple[PricePoint, ...]:
+        """Return dated daily closing prices, using a short-lived cache."""
+        key = (symbol, period)
+        with self._lock:
+            cached = self._histories.get(key)
+            if cached and time.monotonic() - cached[0] < self._ttl:
+                return cached[1]
+        try:
+            ticker = yf.Ticker(symbol)
+            history = ticker.history(period=period)
+            currency = ticker.history_metadata.get("currency")
+        except YFRateLimitError as exc:
+            raise MarketDataError(
+                "Market data provider is rate limited. Try again later."
+            ) from exc
+        if history.empty:
+            raise MarketDataError(f"No price history found for {symbol}")
+        if currency != "BRL":
+            raise MarketDataError(
+                f"Unsupported currency {currency or 'unknown'} for {symbol}; "
+                "only BRL instruments are supported"
+            )
+        prices = tuple(
+            PricePoint(date=timestamp.date(), close=float(value))
+            for timestamp, value in history["Close"].items()
+            if value and math.isfinite(float(value)) and float(value) > 0
+        )
+        if not prices:
+            raise MarketDataError(f"No valid prices found for {symbol}")
+        with self._lock:
+            self._prune(self._histories, key)
+            self._histories[key] = (time.monotonic(), prices)
+        return prices

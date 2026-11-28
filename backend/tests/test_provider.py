@@ -224,6 +224,35 @@ def test_unknown_sector_maps_to_other() -> None:
         assert provider.sector("UNKNOWN.sa") == "other"
 
 
+def test_price_history_rejects_unsupported_currency() -> None:
+    provider = YahooFinanceProvider()
+
+    class Series:
+        def items(self) -> object:
+            return iter([(datetime(2024, 1, 1, tzinfo=UTC), 100.0)])
+
+    class Frame:
+        empty = False
+
+        def __getitem__(self, key: str) -> Series:
+            return Series()
+
+    class PriceTicker:
+        history_metadata = {"currency": "USD"}
+
+        def history(
+            self, period: str, actions: bool = False, auto_adjust: bool = True
+        ) -> Frame:
+            return Frame()
+
+    with patch(
+        "app.services.provider.yf.Ticker",
+        return_value=PriceTicker(),
+    ):
+        with pytest.raises(MarketDataError, match="Unsupported currency USD"):
+            provider.price_history("MSFT")
+
+
 def test_expired_cache_entries_are_removed() -> None:
     provider = YahooFinanceProvider(cache_ttl_seconds=0)
     with patch(
