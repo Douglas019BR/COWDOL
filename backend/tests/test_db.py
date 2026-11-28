@@ -23,8 +23,8 @@ def test_save_list_load_and_delete(temp_db: None) -> None:
                 "purchase_value": 10.0,
             }
         ],
-        "results": None,
-        "risk": None,
+        "results": {"holdings": [{"symbol": "PETR4.sa", "balance": 20.0}]},
+        "risk": {"volatility": 0.2, "assets": []},
     }
     portfolio_id = db.save_portfolio(payload)
 
@@ -32,7 +32,16 @@ def test_save_list_load_and_delete(temp_db: None) -> None:
     loaded = db.load_portfolio(portfolio_id)
     assert loaded is not None
     assert loaded["holdings"][0]["symbol"] == "PETR4.sa"
+    assert loaded["results"]["holdings"][0]["balance"] == 20.0
+    assert loaded["risk"]["volatility"] == 0.2
+
+    empty_id = db.save_portfolio({**payload, "results": None, "risk": None})
+    empty = db.load_portfolio(empty_id)
+    assert empty is not None
+    assert empty["results"] is None
+    assert empty["risk"] is None
 
     assert db.delete_portfolio(portfolio_id) is True
+    assert db.delete_portfolio(empty_id) is True
     assert db.load_portfolio(portfolio_id) is None
     assert db.delete_portfolio(portfolio_id) is False

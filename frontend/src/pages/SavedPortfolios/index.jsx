@@ -10,7 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { deletePortfolio, listPortfolios, loadPortfolio } from '../../services/api';
@@ -20,23 +20,56 @@ export default function SavedPortfolios() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
+  const latestRefresh = useRef(0);
+  const latestLoad = useRef(0);
 
   function refresh() {
+    const requestId = ++latestRefresh.current;
     listPortfolios()
-      .then(setItems)
-      .catch((requestError) => setError(requestError.message));
+      .then((data) => {
+        if (requestId === latestRefresh.current) {
+          setItems(data);
+          setError(null);
+        }
+      })
+      .catch((requestError) => {
+        if (requestId === latestRefresh.current) {
+          setError(requestError.message);
+        }
+      });
   }
 
-  useEffect(refresh, []);
+  useEffect(() => {
+    refresh();
+    return () => {
+      latestRefresh.current += 1;
+      latestLoad.current += 1;
+    };
+  }, []);
 
   async function handleDelete(id) {
-    await deletePortfolio(id);
-    refresh();
+    setError(null);
+    try {
+      await deletePortfolio(id);
+      refresh();
+    } catch (requestError) {
+      setError(requestError.message);
+    }
   }
 
   async function handleLoad(id) {
-    const saved = await loadPortfolio(id);
-    navigate('/portfolio', { state: { saved } });
+    const requestId = ++latestLoad.current;
+    setError(null);
+    try {
+      const saved = await loadPortfolio(id);
+      if (requestId === latestLoad.current) {
+        navigate('/portfolio', { state: { saved } });
+      }
+    } catch (requestError) {
+      if (requestId === latestLoad.current) {
+        setError(requestError.message);
+      }
+    }
   }
 
   return (
